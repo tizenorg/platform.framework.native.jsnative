@@ -1,0 +1,10 @@
+{
+  "name": "gcontext",
+  "version": "0.0.1",
+  "description": "Utility module for integrating glib mainloop",
+  "main": "./build/Release/gcontext",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "appfw",
+  "version": "0.0.1",
+  "description": "Application framework module for Tizen",
+  "main": "./lib/appfw.js",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

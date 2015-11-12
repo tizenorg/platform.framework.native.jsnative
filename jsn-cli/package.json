@@ -1,0 +1,23 @@
+{
+  "name": "jsn-cli",
+  "version": "0.1.0",
+  "preferGlobal": "true",
+  "description": "command-line interface for js native runtime",
+  "main": "jsn-cli",
+  "bin": {
+    "jsn-cli": "./bin/jsn-cli"
+  },
+  "engines": { "node": ">= 4.2.1" },
+  "dependencies": {
+      "elementtree": "0.1.6",
+      "pretty-data": "0.40.0",
+      "q": "1.4.1",
+      "shelljs": "0.5.3",
+      "string-template": "0.2.1"
+    },
+  "author": { "name": "Yongseop Kim", "email": "yons.kim@samsung.com" },
+  "contributors": [
+    { "name": "Yongseop Kim", "email": "yons.kim@samsung.com" },
+    { "name": "Joonghyun Cho", "email": "jh5.cho@samsung.com" }
+  ]
+}

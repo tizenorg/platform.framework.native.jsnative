@@ -1,0 +1,13 @@
+{
+  "name": "node-xwalk",
+  "version": "0.9.0",
+  "description": "Crosswalk extension loader for Node.JS",
+  "main": "./lib/loader.js",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  }
+}

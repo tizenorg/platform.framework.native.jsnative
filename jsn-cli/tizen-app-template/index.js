@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-module.paths = ['/usr/lib/js-binding/'].concat(module.paths);
 var appfw = require('appfw');
 
 appfw.on('create' , function() {

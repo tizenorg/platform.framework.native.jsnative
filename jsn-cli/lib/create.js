@@ -11,17 +11,15 @@ const shellUtil = require('./shell_util');
 module.exports = create;
 
 function create(argv, parser) {
-  console.log('<create>');
-
   const manifestFile = 'tizen-manifest.xml';
   const iconFile = 'icon.png';
 
   return Q.fcall(() => {
     if (argv.args_[0] === undefined || argv.args_[1] === undefined) {
-      throw new JsnError('You should type proper parameters');
+      throw new JsnError('error: You should type proper parameters');
     } else {
       const createType = argv.args_[0];
-      console.log('Create Type: %s', createType);
+      console.log('Creating %s...', createType);
 
       switch (createType) {
         case 'package':
@@ -33,7 +31,7 @@ function create(argv, parser) {
         return createApp(appId, parser);
 
         default:
-        throw new JsnError('You should type proper parameters');
+        throw new JsnError('error: You should type proper parameters');
       }
     }
   })
@@ -49,11 +47,10 @@ function create(argv, parser) {
     *        /tizen-manifest.xml(file)
     */
   function createPackage(pkgId, parser) {
-    console.log('Creating Package');
-    console.log(parser.get('exec_path'));
+    // Creating Package
     const dirToCreate = path.join(parser.get('exec_path'), pkgId);
 
-    console.log('Checking directory to create package');
+    // Checking directory to create package
 
     /**
       * if the dir exists and the dir is not empty, exit program
@@ -75,8 +72,7 @@ function create(argv, parser) {
         }
       },
       () => {
-        console.log(dirToCreate + ' isn\'t existed');
-        console.log('Generating a new package dir : %s', dirToCreate);
+        // Generating a new package dir : 'dirToCreate'
         return Q.denodeify(fs.mkdir)(dirToCreate);
     })
 
@@ -88,8 +84,8 @@ function create(argv, parser) {
       *        /res
       */
     .then(() => {
-      console.log('Creating a new jsn project package');
-      console.log('Creating directories in project');
+      // Creating a new jsn project package
+      // Creating directories in project
       const shExecPromises = ['shared', 'bin', 'lib', 'res']
         .map(dir => 'mkdir ' + path.join(dirToCreate, dir))
         .map(shellUtil.shExec);
@@ -103,7 +99,7 @@ function create(argv, parser) {
       *               /res
       */
     .then(() => {
-      console.log('Creating directories in project/shared');
+      // Creating directories in project/shared
       return Q.denodeify(fs.mkdir)(path.join(dirToCreate, 'shared', 'res'));
     })
 
@@ -113,7 +109,7 @@ function create(argv, parser) {
       *            /icon.png
       */
     .then(() => {
-      console.log('Copying icon');
+      // Copying icon
       const defaultIconPath = path.join('..', 'tizen-app-template', iconFile);
       const iconCmd = 'cp ' + defaultIconPath + ' ' +
                       path.join(dirToCreate, 'shared', 'res', iconFile);
@@ -126,7 +122,7 @@ function create(argv, parser) {
       * [pkgid]/tizen-manifest.xml
       */
     .then(() => {
-      console.log('Creating manifest');
+      // Creating manifest
       const oriManifest = path.join('..', 'tizen-app-template', manifestFile);
       return Q.denodeify(fs.readFile)(oriManifest);
     })
@@ -157,8 +153,6 @@ function create(argv, parser) {
     *        /tizen-manifest.xml(file) - add 'ui-application' element
     */
   function createApp(appId, parser) {
-    console.log('createApp');
-
     return parser.parse()
     .catch(err => {
         throw new JsnError('Parsing manifest file has a problem: ' +
@@ -166,17 +160,17 @@ function create(argv, parser) {
     })
 
     .then(() => {
-      console.log('Creating a new appication.');
-      console.log('Checking whether the app(%s) exists', appId);
+      // Creating a new appication
+      // Checking whether the 'appId' exists
       const app = parser.getAppSync(appId);
       if (app) {
-        throw new JsnError(appId + " already existed");
+        throw new JsnError(appId + " already exists");
       }
     })
 
     // add 'ui-application' element in manifest file
     .then(() => {
-      console.log('Addding <ui-application> element in manifest file');
+      // Addding <ui-application> element in manifest file
       return parser.addUiAppInManifest(appId)
         .catch(err => { throw err; });
     })
@@ -187,7 +181,7 @@ function create(argv, parser) {
       *                 /[pkgid].[appid]
       */
     .then(() => {
-      console.log('Creating bin file');
+      // Creating bin file
       const defaultBinPath =
           path.join('..', 'tizen-app-template', 'pkgid.appid');
       return Q.denodeify(fs.readFile)(defaultBinPath)
@@ -209,12 +203,12 @@ function create(argv, parser) {
       *                         /index.js
       */
     .then(() => {
-      console.log('Creating app directory');
+      // Creating app directory
       const appDir = path.join(parser.get('exec_path'), 'res', appId);
       return Q.denodeify(fs.mkdir)(appDir);
     })
     .then(() => {
-      console.log('Creating index.js');
+      // Creating index.js
       const defaultIndexPath =
           path.join('..', 'tizen-app-template', 'index.js');
       return Q.denodeify(fs.readFile)(defaultIndexPath)

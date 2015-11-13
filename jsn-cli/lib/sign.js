@@ -22,8 +22,7 @@ function sign(argv, parser) {
     // if argc is not 11, argc's num is equal or greater than 7 minimally
     if (argc !== 7 && argc !== 11) {
       throw new JsnError(
-          'You should type sign command with proper arguments\n' +
-          'Command you typed: ' + argv.args_);
+          'error: You should type sign command with proper arguments');
     }
   })
 
@@ -53,7 +52,6 @@ function sign(argv, parser) {
     const dist2RootPath = argv.args_[10] || '" "';
 
     // verify arguments for sign command by checking wheter files exist
-    console.log('Verifing arguments for signing');
     let verifyArgv = [signer, targetDir, authorCAPath, authorP12Path,
                       dist1P12Path, dist1CAPath];
     if (argc === 11) {
@@ -96,8 +94,8 @@ function sign(argv, parser) {
     * exists, remove all of them
     */
   .then(() => {
-    console.log('Signing package');
-    console.log('Checking previous signing');
+    console.log('Signing package...');
+    // Checking previous signing
     const shExecPromises = ['*.tpk', 'author-signature.xml',
                             '.manifest.tmp', 'signature1.xml']
         .map(dir => ('rm ' + path.join(parser.get('exec_path'), dir)))
@@ -109,8 +107,10 @@ function sign(argv, parser) {
 
   // try signing
   .then(() => {
-    console.log('Trying signing from %s', signCmdArray[0]);
+    // Trying signing from 'signCmdArray[0]'
     const signCmd = signCmdArray.join(' ');
-    return shellUtil.shExec(signCmd);
+    return shellUtil.shExec(signCmd)
+    .catch(function() { throw new JsnError("Fail to sign packge");
+  });
   });
 }

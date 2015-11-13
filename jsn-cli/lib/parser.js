@@ -59,7 +59,7 @@ class Parser {
   parse() {
     if (this.ready === false) {
       return Q.fcall(() => {
-        throw new JsnError('Parser is not ready. ' +
+        throw new JsnError('\n  Parser is not ready. ' +
                            'Checks whether the manifest file exists');
       });
     }
@@ -102,9 +102,7 @@ class Parser {
                            'while parsing manifest file');
       }
       this.parsed = true;
-    })
-
-    .then(() => console.log('Parsing is successful'));
+    });
   } // parse
 
   addUiAppInManifest(appId) {

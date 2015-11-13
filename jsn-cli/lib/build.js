@@ -14,15 +14,12 @@ function build(argv, parser) {
   const needToSign = argv.args_[0] || 'nosign';
   switch(needToSign) {
     case 'sign':
-    console.log('Build command will package with signing');
-
     // current args_[0] is 'sign'. So remove it.
     argv.args_.shift();
     return require('./sign')(argv, parser)
     .then(() => packageToTpk());
 
     case 'nosign':
-    console.log('Build command will package without signing');
     return parser.parse()
     .catch(err => {
       throw new JsnError('Parsing manifest file has a problem: ' +
@@ -31,15 +28,14 @@ function build(argv, parser) {
     .then(() => packageToTpk());
 
     default:
-    throw new JsnError('Wrong parameters for build command: ' +
-                       needToSign);
+    throw new JsnError('Wrong parameters for build command');
   }
 
   function packageToTpk() {
     const dotTpk = '.tpk';
     const dirToGoBack = process.cwd();
 
-    console.log('Building the package');
+    console.log('Building the package...');
 
     // exist 'zip' command?
     return shellUtil.shExec('which zip')

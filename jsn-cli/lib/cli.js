@@ -14,7 +14,7 @@ module.exports = cli;
   * Promises: http://www.html5rocks.com/en/tutorials/es6/promises/
   * q: https://github.com/kriskowal/q
   */
-function cli(inputArgv) {
+function cli(inputArgv, execPath) {
   // verify inputArgv
   const argv = getVerifiedArgv(inputArgv);
   if (argv === null) {
@@ -22,18 +22,10 @@ function cli(inputArgv) {
     return;
   }
 
-  // add exec path
-  const execPath = process.cwd();
   argv.exec_path_ = execPath;
 
   // setup manifest parser
   const parser = new (require('./parser'))(execPath);
-
-  // get real path because it can be real bin file or symbolic link file
-  const binDir = path.dirname(fs.realpathSync(process.argv[1]));
-
-  // change cwd
-  process.chdir(path.join(binDir, '..', 'lib'));
 
   // process command
   switch (argv.cmd_) {

@@ -1,4 +1,19 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodejs
 
-const cli = require('../lib/cli');
-cli(process.argv);
+var fs = require('fs');
+var path = require('path');
+
+// get current path of execution
+var execPath = process.cwd();
+
+// get real path because it can be real bin file or symbolic link file
+var binDir = path.dirname(fs.realpathSync(process.argv[1]));
+
+// change cwd
+process.chdir(path.join(binDir, '..', 'lib'));
+
+// babel for es6
+require('babel-core/register');
+
+// compile & execute
+require('../lib/cli')(process.argv, execPath);

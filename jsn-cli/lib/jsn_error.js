@@ -1,12 +1,11 @@
-'use strict'
+(function() {
+  'use strict';
 
-class JsnError extends Error {
-  constructor(message) {
-    super(message);
+  module.exports = function JsnError(message) {
+    Error.captureStackTrace(this, this.constructor.name);
     this.name = this.constructor.name;
     this.message = message;
-    Error.captureStackTrace(this, this.constructor.name)
-  }
-}
+  };
 
-module.exports = JsnError;
+  require('util').inherits(module.exports, Error);
+}());

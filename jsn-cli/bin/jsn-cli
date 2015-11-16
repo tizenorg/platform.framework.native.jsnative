@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env node
 
 var fs = require('fs');
 var path = require('path');
@@ -11,9 +11,6 @@ var binDir = path.dirname(fs.realpathSync(process.argv[1]));
 
 // change cwd
 process.chdir(path.join(binDir, '..', 'lib'));
-
-// babel for es6
-require('babel-core/register');
 
 // compile & execute
 require('../lib/cli')(process.argv, execPath);

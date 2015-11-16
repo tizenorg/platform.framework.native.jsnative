@@ -1,19 +1,18 @@
-'use strict'
+(function() {
+  'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const et = require('elementtree');
-const pd = require('pretty-data').pd;
-const Q = require('q');
-const format = require('string-template');
+  var fs = require('fs');
+  var path = require('path');
+  var et = require('elementtree');
+  var pd = require('pretty-data').pd;
+  var Q = require('q');
+  var format = require('string-template');
 
-const JsnError = require('./jsn_error');
+  var JsnError = require('./jsn_error');
 
-const MANIFEST_FILE = 'tizen-manifest.xml';
+  var MANIFEST_FILE = 'tizen-manifest.xml';
 
-class Parser {
-  // this constructor doesn't use any Promises
-  constructor(execPath) {
+  function Parser(execPath) {
     this.exec_path = execPath;
     this.manifest_path = '';
     this.has_package = false;
@@ -25,10 +24,10 @@ class Parser {
     this.parsed = false;
 
     // ready_ expresses ready for parsing
-    this.ready = (() => {
-      const maybeManifestPath = path.join(this.exec_path,
+    this.ready = (function(this_) {
+      var maybeManifestPath = path.join(this_.exec_path,
                                           MANIFEST_FILE);
-      const existManifest = (path => {
+      var existManifest = (function(path) {
           try {
             return (fs.statSync(path));
           } catch(err) {
@@ -36,167 +35,177 @@ class Parser {
           }
       })(maybeManifestPath);
       if (existManifest) {
-        this.manifest_path = maybeManifestPath;
+        this_.manifest_path = maybeManifestPath;
         return true;
       } else {
         return false;
       }
-    })();
-  }
+    })(this);
+  } // Parser
 
-  set(key, val) {
-    this[key] = val;
-  }
+  Parser.prototype = {
+    constructor: Parser,
+    set: function(key, val) {
+      this[key] = val;
+    },
 
-  get(key) {
-    return this[key];
-  }
+    get: function(key) {
+      return this[key];
+    },
 
-  /**
-    * parses manifest file and its contents are parsed to Parser's
-    * members. this method returns a promise.
-    */
-  parse() {
-    if (this.ready === false) {
-      return Q.fcall(() => {
-        throw new JsnError('\n  Parser is not ready. ' +
-                           'Checks whether the manifest file exists');
-      });
-    }
-
-    return Q.denodeify(fs.readFile)(this.manifest_path)
-    .then(data => {
-      const etree = et.parse(data.toString());
-
-      // parse package
-      const manifestElem = etree.getroot();
-      if (manifestElem) {
-        const pack = {
-          pkg_id: manifestElem.get('package'),
-          pkg_version: manifestElem.get('version'),
-          api_version: manifestElem.get('api-version')
-        };
-        this.package = pack;
-        this.has_package = true;
-      } else {
-        throw new JsnError('Can\'t get manifest element ' +
-                           'while parsing manifest file');
+    /**
+      * parses manifest file and its contents are parsed to Parser's
+      * members. this method returns a promise.
+      */
+    parse: function() {
+      if (this.ready === false) {
+        return Q.fcall(function() {
+          throw new JsnError('\n  Parser is not ready. ' +
+                             'Checks whether the manifest file exists');
+        });
       }
 
-      // parse apps
-      const uiAppElems = etree.findall('./ui-application');
-      if (uiAppElems) {
-        const len = uiAppElems.length;
-        this.has_app = (len > 0) ? true : false;
-        for (let i = 0; i < len; i++) {
-          const uiApp = uiAppElems[i];
-          const app = {
-            app_id: uiApp.get('appid'),
-            exec: uiApp.get('exec'),
-            type: uiApp.get('type')
+      var self = this;
+      return Q.denodeify(fs.readFile)(self.manifest_path)
+      .then(function(data) {
+        var etree = et.parse(data.toString());
+
+        // parse package
+        var manifestElem = etree.getroot();
+        if (manifestElem) {
+          var pack = {
+            pkg_id: manifestElem.get('package'),
+            pkg_version: manifestElem.get('version'),
+            api_version: manifestElem.get('api-version')
           };
-          this.apps[i] = app;
+          self.package = pack;
+          self.has_package = true;
+        } else {
+          throw new JsnError('Can\'t get manifest element ' +
+                             'while parsing manifest file');
         }
-      } else {
-        throw new JsnError('Can\'t get any ui app elements ' +
-                           'while parsing manifest file');
-      }
-      this.parsed = true;
-    });
-  } // parse
 
-  addUiAppInManifest(appId) {
-    return Q.denodeify(fs.readFile)(this.manifest_path)
-    .then(data => {
-      const etree = et.parse(data.toString());
-      const subElement = et.SubElement;
-      let root = etree.getroot();
-      let uiAppElem = subElement(root, 'ui-application');
-      uiAppElem.set('appid', appId);
-      uiAppElem.set('exec', this.package.pkg_id + '.' + appId);
-      uiAppElem.set('type', 'jsapp');
-      uiAppElem.set('multiple', 'false');
-      uiAppElem.set('taskmanage', 'true');
-      uiAppElem.set('nodisplay', 'false');
+        // parse apps
+        var uiAppElems = etree.findall('./ui-application');
+        if (uiAppElems) {
+          var len = uiAppElems.length;
+          self.has_app = (len > 0) ? true : false;
+          for (var i = 0; i < len; i++) {
+            var uiApp = uiAppElems[i];
+            var app = {
+              app_id: uiApp.get('appid'),
+              exec: uiApp.get('exec'),
+              type: uiApp.get('type')
+            };
+            self.apps[i] = app;
+          }
+        } else {
+          throw new JsnError('Can\'t get any ui app elements ' +
+                             'while parsing manifest file');
+        }
+        self.parsed = true;
+      });
+    }, // parse
 
-      let iconElem = subElement(uiAppElem, 'icon');
-      iconElem.text = 'icon.png';
-      let labelElem = subElement(uiAppElem, 'label');
-      labelElem.text = appId;
+    addUiAppInManifest: function(appId) {
+      var self = this;
+      return Q.denodeify(fs.readFile)(self.manifest_path)
+      .then(function(data) {
+        var etree = et.parse(data.toString());
+        var subElement = et.SubElement;
+        var root = etree.getroot();
+        var uiAppElem = subElement(root, 'ui-application');
+        uiAppElem.set('appid', appId);
+        uiAppElem.set('exec', self.package.pkg_id + '.' + appId);
+        uiAppElem.set('type', 'jsapp');
+        uiAppElem.set('multiple', 'false');
+        uiAppElem.set('taskmanage', 'true');
+        uiAppElem.set('nodisplay', 'false');
 
-      // print xml pretty
-      const xmlPretty = pd.xml(etree.write());
-      return xmlPretty;
-    })
+        var iconElem = subElement(uiAppElem, 'icon');
+        iconElem.text = 'icon.png';
+        var labelElem = subElement(uiAppElem, 'label');
+        labelElem.text = appId;
 
-    .then(xmlPretty =>
-        Q.denodeify(fs.writeFile)(this.manifest_path, xmlPretty));
-  } // addUiAppInManifest
+        // print xml pretty
+        var xmlPretty = pd.xml(etree.write());
+        return xmlPretty;
+      })
 
-  removeApp(appId) {
-    const app = this.getAppSync(appId);
+      .then(function(xmlPretty) {
+          Q.denodeify(fs.writeFile)(self.manifest_path, xmlPretty);
+        });
+    }, // addUiAppInManifest
 
-    return Q.fcall(() => {
-      if (app == null) {  // equals to ((=== null) or (=== undefined))
-        throw new JsnError(appId + ' doesn\'t exist');
-      }
-    })
+    removeApp: function(appId) {
+      var self = this;
+      var app = self.getAppSync(appId);
 
-    .then(() => Q.denodeify(fs.readFile)(this.manifest_path))
+      return Q.fcall(function() {
+        if (app === null) {  // equals to ((=== null) or (=== undefined))
+          throw new JsnError(appId + ' doesn\'t exist');
+        }
+      })
 
-    .then(data => {
-      const etree = et.parse(data.toString());
-      let root = etree.getroot();
-      const uiAppElems = root.findall('./ui-application');
-      if (uiAppElems) {
-        const len = uiAppElems.length;
-        for (let i = 0; i < len; i++) {
-          const uiApp = uiAppElems[i];
-          if (uiApp.get('appid') == appId) {
-            root.remove(uiApp);
-            const xmlPretty = pd.xml(etree.write());
-            return xmlPretty;
+      .then(function() {
+        return Q.denodeify(fs.readFile)(self.manifest_path);
+      })
+
+      .then(function(data) {
+        var etree = et.parse(data.toString());
+        var root = etree.getroot();
+        var uiAppElems = root.findall('./ui-application');
+        if (uiAppElems) {
+          var len = uiAppElems.length;
+          for (var i = 0; i < len; i++) {
+            var uiApp = uiAppElems[i];
+            if (uiApp.get('appid') == appId) {
+              root.remove(uiApp);
+              var xmlPretty = pd.xml(etree.write());
+              return xmlPretty;
+            }
           }
         }
-      }
-      throw new JsnError('Can\'t get valid ui-application element' +
-                         'while parsing mafniest file');
-    })
+        throw new JsnError('Can\'t get valid ui-application element' +
+                           'while parsing mafniest file');
+      })
 
-    .then(xmlPretty =>
-        Q.denodeify(fs.writeFile)(this.manifest_path, xmlPretty))
+      .then(function(xmlPretty) {
+          Q.denodeify(fs.writeFile)(self.manifest_path, xmlPretty);
+        })
 
-    .then(() => {
-      const len = this.apps.length;
-      for (let i = 0; i < len; i++) {
-        const app = this.apps[i];
-        if (app.app_id == appId) {
-          this.apps.splice(i, 1);
-          break;
+      .then(function() {
+        var len = self.apps.length;
+        for (var i = 0; i < len; i++) {
+          var app = self.apps[i];
+          if (app.app_id == appId) {
+            self.apps.splice(i, 1);
+            break;
+          }
         }
+        self.has_app = (self.apps.length > 0) ? true : false;
+      });
+    }, // removeApp
+
+    // it is not async, so adds 'sync' to the its name
+    getAppSync: function(appId) {
+      if (!this.has_app)
+        return null;
+      var len = this.apps.length;
+      for (var i = 0; i < len; i++) {
+        var app = this.apps[i];
+        if (app.app_id == appId)
+          return app;
       }
-      this.has_app = (this.apps.length > 0) ? true : false;
-    });
-  } // removeApp
-
-  // it is not async, so adds 'sync' to the its name
-  getAppSync(appId) {
-    if (!this.has_app)
       return null;
-    const len = this.apps.length;
-    for (let i = 0; i < len; i++) {
-      const app = this.apps[i];
-      if (app.app_id == appId)
-        return app;
-    }
-    return null;
-  } // getAppSync
-} // Parser
+    } // getAppSync
+  };
 
-/**
-  * This Parser module is a class. Parser contains actions such as parsing
-  * manifest file, and adding/removing 'ui-application' element.
-  * Parser does 'async' by 'Promises' with 'q'.
-  * (Reference to 'cli.js')
-  */
-module.exports = Parser;
+  /**
+    * This Parser module is a class. Parser contains actions such as parsing
+    * manifest file, and adding/removing 'ui-application' element.
+    * Parser does 'async' by 'Promises' with 'q'.
+    * (Reference to 'cli.js')
+    */
+  module.exports = Parser;
+}());

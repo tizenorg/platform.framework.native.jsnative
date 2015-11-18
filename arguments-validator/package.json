@@ -1,0 +1,10 @@
+{
+  "name": "arguments-validator",
+  "version": "0.0.1",
+  "description": "Arguments Validator for Tizen Device API",
+  "main": "validator.js",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  }
+}

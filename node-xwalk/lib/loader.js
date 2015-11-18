@@ -6,7 +6,7 @@ var fs = require('fs');
 var path = require('path');
 var process = require('process');
 
-var native_ = require("../build/Release/native.node");
+var native_ = require("../build/Release/native");
 
 function error(msg) {
   console.error("ERR: " + msg);

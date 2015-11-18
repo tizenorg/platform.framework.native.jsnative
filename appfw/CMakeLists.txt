@@ -1,5 +1,5 @@
 SET(TARGET_APPFW "appfw")
-SET(TARGET_APPFW_NATIVE "appfw-native")
+SET(TARGET_APPFW_NATIVE "appfw_native")
 SET(TARGET_APPFW_SRC ${PROJECT_SOURCE_DIR}/appfw)
 
 # Copy Project

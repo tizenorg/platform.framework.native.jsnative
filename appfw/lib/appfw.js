@@ -37,7 +37,7 @@ Application.prototype.init = function(name) {
   internal(this).initialized = true;
   process.title = process.argv[1];
 
-  var appfw = require('../build/Release/appfw-native.node');
+  var appfw = require('../build/Release/appfw_native');
   var EventEmitter = require('events');
 
   // gcontext module should be installed as global module

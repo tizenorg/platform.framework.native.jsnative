@@ -15,6 +15,11 @@ BuildRequires: pkgconfig(appcore-efl)
 BuildRequires: pkgconfig(aul)
 BuildRequires: pkgconfig(dlog)
 BuildRequires: pkgconfig(nodejs)
+BuildRequires: pkgconfig(libsmack)
+BuildRequires: pkgconfig(cynara-client)
+BuildRequires: pkgconfig(capi-appfw-app-manager)
+BuildRequires: pkgconfig(pkgmgr-info)
+
 Requires: nodejs
 
 %description

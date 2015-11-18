@@ -1,0 +1,10 @@
+{
+  "name": "privileges",
+  "version": "0.0.1",
+  "description": "Privilege checker for Tizen",
+  "main": "./lib/privileges.js",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  }
+}

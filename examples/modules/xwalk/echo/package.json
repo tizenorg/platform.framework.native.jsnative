@@ -1,0 +1,10 @@
+{
+  "name": "echo",
+  "version": "0.0.1",
+  "description": "Sample for xwalk-extensions-common",
+  "main": "echo.xwalk",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  }
+}

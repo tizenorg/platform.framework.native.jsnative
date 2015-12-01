@@ -2,12 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var fs = require('fs');
-var path = require('path');
-var process = require('process');
-
-var native_ = require("../build/Release/native");
-
 function error(msg) {
   console.error("ERR: " + msg);
 }
@@ -15,30 +9,23 @@ function error(msg) {
 // Cached set of extension modules
 var extensions_ = {};
 
-var ExtensionModule = function(ext_name, ext_path) {
-  this.extension_name = ext_name;
+var ExtensionModule = function(ext_path) {
   this.extension_path = ext_path;
 };
 
 ExtensionModule.prototype.load = function() {
+  var native_ = require("../build/Release/native");
   this.extension_info = native_.getExtensionInfo(this.extension_path);
   if (!this.extension_info) {
     error('Error during get information of extension "' +
-          this.extension_name + '"');
-    return false;
-  }
-
-  if (this.extension_info.name !== this.extension_name) {
-    error('Extension name does not match. ' +
-          'required = ' + this.extension_name +
-          ', loaded = ' + this.extension_info.name);
+          this.extension_path + '"');
     return false;
   }
 
   this.instance_id = native_.createInstance(this.extension_info.extension_id);
   if (!this.instance_id) {
     error('Error during creating instance of extension "' +
-          this.extension_name + '"');
+          this.extension_path + '"');
     return false;
   }
 
@@ -68,7 +55,7 @@ ExtensionModule.prototype.load = function() {
     return true;
   } catch (err) {
     error('Error during loading extension "' +
-          this.extension_name + '"');
+          this.extension_path + '"');
     return false;
   }
 
@@ -76,48 +63,74 @@ ExtensionModule.prototype.load = function() {
 };
 
 var ExtensionLoader = function() {
+  var process = require('process');
   this.extension_paths = [
     process.cwd(),
-    path.join(process.cwd(), 'xwalk_extensions')
+    require('path').join(process.cwd(), 'xwalk_extensions')
   ];
 };
 
 ExtensionLoader.prototype.findExtensionInPath = function(name) {
-  for (var i in this.extension_paths) {
-    var ext_path = path.join(this.extension_paths[i],
-                             'lib' + name + '.so');
+  var fs = require('fs');
+  var path = require('path');
+
+  if (path.isAbsolute(name)) {
     try {
-      fs.accessSync(ext_path, fs.R_OK);
-      return ext_path;
+      fs.accessSync(name, fs.R_OK);
+      return name;
     } catch (err) {
-      continue;
+      return undefined;
+    }
+  }
+
+  for (var i in this.extension_paths) {
+    var try_files = [
+      path.join(this.extension_paths[i], name),
+      path.join(this.extension_paths[i], name + '.xwalk'),
+      path.join(this.extension_paths[i], 'lib' + name + '.so')
+    ];
+
+    for (var j in try_files) {
+      try {
+        fs.accessSync(try_files[j], fs.R_OK);
+        return try_files[j];
+      } catch (err) {
+        continue;
+      }
     }
   }
   return undefined;
 };
 
 ExtensionLoader.prototype.setRuntimeVariable = function(key, value) {
+  var native_ = require("../build/Release/native");
   native_.setRuntimeVariable(key, value);
 };
 
 ExtensionLoader.prototype.require = function(name) {
-  if (extensions_.hasOwnProperty(name)) {
-    return extensions_[name].instance;
-  }
-
   var ext_path = this.findExtensionInPath(name);
   if (!ext_path) {
     error('Can not find extension "' + name + '"');
     return undefined;
   }
 
-  var ext = new ExtensionModule(name, ext_path);
+  if (extensions_.hasOwnProperty(ext_path)) {
+    return extensions_[ext_path].instance;
+  }
+
+  var ext = new ExtensionModule(ext_path);
   if (ext.load()) {
-    extensions_[name] = ext;
-    return extensions_[name].instance;
+    extensions_[ext_path] = ext;
+    return extensions_[ext_path].instance;
   }
 
   return undefined;
 };
 
-module.exports = new ExtensionLoader;
+ExtensionLoader.prototype.install = function() {
+  require.extensions['.xwalk'] = function(module, filename) {
+    module.exports = require('node-xwalk').require(filename);
+  };
+};
+
+module.exports = new ExtensionLoader();

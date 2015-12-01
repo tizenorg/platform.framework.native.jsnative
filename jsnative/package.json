@@ -1,0 +1,10 @@
+{
+  "name": "jsnative",
+  "version": "0.0.1",
+  "description": "JSNative common module",
+  "main": "main.js",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  }
+}

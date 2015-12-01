@@ -1,2 +1,7 @@
 #!/usr/bin/env node
+
+// Initialize JSNative
+require('jsnative');
+
+// Load application's main script
 require('../res/{appid}');

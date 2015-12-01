@@ -25,6 +25,7 @@ ADD_DEFINITIONS("-std=c++0x")           # accept C++11x standard
 
 SET(GLOBAL_NODE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/node)
 
+ADD_SUBDIRECTORY(jsnative)
 ADD_SUBDIRECTORY(appfw)
 ADD_SUBDIRECTORY(gcontext)
 ADD_SUBDIRECTORY(node-xwalk)

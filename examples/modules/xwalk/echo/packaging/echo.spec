@@ -10,10 +10,9 @@ Source1:    %{name}.manifest
 
 BuildRequires: ninja
 BuildRequires: gyp_xwext
-BuildRequires: pkgconfig(xwalk-extensions-common)
 
 %description
-Echo sample for xwalk-extensions-common
+Echo sample extension
 
 %prep
 %setup -q
@@ -22,7 +21,7 @@ cp %{SOURCE1} .
 %build
 
 export GYP_GENERATORS='ninja'
-gyp_xwext xwalk/build.gyp
+gyp_xwext build.gyp
 ninja -C out/Default %{?_smp_mflags}
 
 %install

@@ -1,0 +1,10 @@
+{
+  "name": "reaper",
+  "version": "0.0.1",
+  "description": "Utility module for tracking lifecycle of object",
+  "main": "./build/Release/reaper",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

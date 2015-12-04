@@ -1,0 +1,14 @@
+{
+  "name": "player",
+  "version": "0.0.1",
+  "description": "lifecycle manage example as player module",
+  "dependencies": {
+    "reaper": ">= 0.0.1",
+    "node-xwalk": ">= 0.9.0",
+  },
+  "main": "player.xwalk",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

@@ -146,11 +146,13 @@ void NativeBinding::PostMessage(
   } else if (args[1]->IsArrayBuffer()) {
     v8::Handle<v8::ArrayBuffer> buffer =
         v8::Handle<v8::ArrayBuffer>::Cast(args[1]);
-    v8::ArrayBuffer::Contents contents = buffer->Externalize();
+    v8::ArrayBuffer::Contents contents = buffer->GetContents();
     void* ptr = contents.Data();
     instance->HandleMessage(static_cast<char*>(ptr),
                             contents.ByteLength());
-    std::free(ptr);
+  } else {
+    LOGE("Can't handle the arguments, only support String nad ArrayBuffer");
+    result.Set(v8::Undefined(isolate));
   }
 }
 
@@ -243,7 +245,8 @@ void NativeBinding::PostMessageToJSCallback(
   v8::Local<v8::Value> args[1];
 
   if (binary) {
-    args[0] = v8::ArrayBuffer::New(isolate, (void*)(msg), size);
+    args[0] = v8::ArrayBuffer::New(isolate, (void*)(msg), size,
+        v8::ArrayBufferCreationMode::kInternalized);
   } else {
     args[0] = v8::String::NewFromUtf8(isolate, msg);
   }

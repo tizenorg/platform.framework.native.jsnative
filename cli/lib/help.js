@@ -64,16 +64,13 @@
     var signExplain = '  (argv): mandatory\n  [argv]: optional,' +
                       ' all [4 parameters] have to be put together';
 
-    var signer = '~/tizen-sdk/tools/ide/bin/native-signing';
-    var authorCAPath ='~/tizen-sdk/tools/certificate-generator/certificates/' +
-                      'developer/tizen-developer-ca.cer';
-    var authorP12Path = '~/tizen-sdk-data/keystore/author/{AUTHOR NAME}.p12';
+    var signer = '{SIGNER}';
+    var authorCAPath ='{CA}.cer';
+    var authorP12Path = '{AUTHOR NAME}.p12';
     var authorPwd = '{AUTHOR PASSWORD}';
-    var dist1P12Path = '~/tizen-sdk/tools/certificate-generator/' +
-                       'certificates/distributor/tizen-distributor-signer.p12';
-    var dist1Pwd = 'tizenpkcs12passfordsigner';
-    var dist1CAPath = '~/tizen-sdk/tools/certificate-generator/certificates/' +
-                      'distributor/tizen-distributor-ca.cer';
+    var dist1P12Path = '{DISTRIBUTOR}.p12';
+    var dist1Pwd = '{DISTRIBUTOR_PW}';
+    var dist1CAPath = '{CA_DISTRIBUTOR}.cer';
 
     var signEx = '  ex) ' + CLI + ' sign ' + signer + ' ' + authorCAPath +
                  ' ' + authorP12Path + ' ' + authorPwd + ' ' + dist1P12Path +
@@ -95,16 +92,13 @@
     var buildSignExplain = '  (argv): mandatory\n  [argv]: optional,' +
                              ' all [4 parameters] have to be put together';
 
-    var signer = '~/tizen-sdk/tools/ide/bin/native-signing';
-    var authorCAPath ='~/tizen-sdk/tools/certificate-generator/certificates/' +
-                      'developer/tizen-developer-ca.cer';
-    var authorP12Path = '~/tizen-sdk-data/keystore/author/{AUTHOR NAME}.p12';
+    var signer = '{SIGNER}';
+    var authorCAPath ='{CA}.cer';
+    var authorP12Path = '{AUTHOR NAME}.p12';
     var authorPwd = '{AUTHOR PASSWORD}';
-    var dist1P12Path = '~/tizen-sdk/tools/certificate-generator/' +
-                       'certificates/distributor/tizen-distributor-signer.p12';
-    var dist1Pwd = 'tizenpkcs12passfordsigner';
-    var dist1CAPath = '~/tizen-sdk/tools/certificate-generator/certificates/' +
-                      'distributor/tizen-distributor-ca.cer';
+    var dist1P12Path = '{DISTRIBUTOR}.p12';
+    var dist1Pwd = '{DISTRIBUTOR_PW}';
+    var dist1CAPath = '{CA_DISTRIBUTOR}.cer';
 
     var buildDefaultEx = 'ex) ' + CLI + ' build';
     var buildSignEx = 'ex) ' + CLI + ' build sign ' + signer + ' ' +

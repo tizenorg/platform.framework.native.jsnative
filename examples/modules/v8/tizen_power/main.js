@@ -33,7 +33,7 @@ function TizenPowerManager() {
 
 TizenPowerManager.prototype.request = function(resource, state) {
   if (PowerResource.indexOf(resource) < 0 || PowerState.indexOf(state) < 0) {
-    throw "TypeMismatch Error";
+    throw 'TypeMismatch Error';
   }
 
   return native_.request(resource, state);
@@ -41,7 +41,7 @@ TizenPowerManager.prototype.request = function(resource, state) {
 
 TizenPowerManager.prototype.release = function(resource) {
   if (PowerResource.indexOf(resource) < 0) {
-    throw "TypeMismatch Error";
+    throw 'TypeMismatch Error';
   }
 
   return native_.release(resource);

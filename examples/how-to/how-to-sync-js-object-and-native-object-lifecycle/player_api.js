@@ -19,7 +19,7 @@ var playerListener = null;
 extension.setMessageListener(function(msg) {
   if (playerListener instanceof Function) {
     playerListener(msg);
-  };
+  }
 });
 
 function ReturnResult(result) {
@@ -31,7 +31,7 @@ function ReturnResult(result) {
       console.log(ret['reason']);
     return false;
   }
-};
+}
 
 var Player = function() {
   var args = {
@@ -40,7 +40,7 @@ var Player = function() {
   var ret = JSON.parse(extension.internal.sendSyncMessage(JSON.stringify(args)));
   if (ret['result'] == 'OK') {
     this.id = ret['id'];
-    require('reaper').setReaper(this, function(deleted){
+    require('reaper').setReaper(this, function(deleted) {
       var args = {
         'cmd': 'Destroy',
         'id': deleted.id,
@@ -52,41 +52,41 @@ var Player = function() {
 
 Player.prototype.setUri = function(path) {
   var args = {
-    'cmd':'SetUri',
-    'path':path,
-    'id':this.id,
+    'cmd': 'SetUri',
+    'path': path,
+    'id': this.id,
   };
   return ReturnResult(extension.internal.sendSyncMessage(JSON.stringify(args)));
 };
 
 Player.prototype.prepare = function() {
   var args = {
-    'cmd':'Prepare',
-    'id':this.id,
+    'cmd': 'Prepare',
+    'id': this.id,
   };
   return ReturnResult(extension.internal.sendSyncMessage(JSON.stringify(args)));
 };
 
 Player.prototype.start = function() {
   var args = {
-    'cmd':'Start',
-    'id':this.id,
+    'cmd': 'Start',
+    'id': this.id,
   };
   return ReturnResult(extension.internal.sendSyncMessage(JSON.stringify(args)));
 };
 
 Player.prototype.stop = function() {
   var args = {
-    'cmd':'Stop',
-    'id':this.id,
+    'cmd': 'Stop',
+    'id': this.id,
   };
   return ReturnResult(extension.internal.sendSyncMessage(JSON.stringify(args)));
 };
 
 Player.prototype.unprepare = function() {
   var args = {
-    'cmd':'Unprepare',
-    'id':this.id,
+    'cmd': 'Unprepare',
+    'id': this.id,
   };
   return ReturnResult(extension.internal.sendSyncMessage(JSON.stringify(args)));
 };

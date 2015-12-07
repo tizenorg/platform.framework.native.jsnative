@@ -19,7 +19,7 @@ var echoListener = null;
 extension.setMessageListener(function(msg) {
   if (echoListener instanceof Function) {
     echoListener(msg);
-  };
+  }
 });
 
 exports.echo = function(msg, callback) {

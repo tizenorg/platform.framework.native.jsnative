@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var Person = require('./how-to-make-class.js');
 
@@ -11,23 +11,23 @@ class Employee extends Person {
   // method override
   getGreetings() {
     var msg = super.getGreetings();
-    msg += " in " + this.company;
+    msg += ' in ' + this.company;
     return msg;
   }
 
   getBonus() {
     return false;
   }
-}
+};
 
 class President extends Employee {
   getBonus() {
     return true;
   }
-}
+};
 
-module.exports = { 'Employee':Employee,
-                   'President':President };
+module.exports = { 'Employee': Employee,
+                   'President': President };
 
 if (require.main === module) {
   // Test code
@@ -41,6 +41,6 @@ if (require.main === module) {
   console.log(vp.getGreetings());
   console.log('My bonus is ' + vp.getBonus());
 
-  console.log("People count : " + Person.howManyPeople());
+  console.log('People count : ' + Person.howManyPeople());
 
 }

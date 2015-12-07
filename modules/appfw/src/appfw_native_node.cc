@@ -68,8 +68,12 @@ void SetCreateHandler() {
     v8::TryCatch try_catch;
     handler_function->Call(v8::Local<v8::Object>::New(isolate, gThis_),
         0, nullptr);
-    if (try_catch.HasCaught())
+    if (try_catch.HasCaught()) {
       LOGE("Exception when running create handler");
+      if (!try_catch.Message().IsEmpty())
+        LOGE("%s", *v8::String::Utf8Value(try_catch.Message()->Get()));
+      try_catch.ReThrow();
+    }
   });
 }
 
@@ -86,8 +90,12 @@ void SetTerminateHandler() {
     v8::TryCatch try_catch;
     handler_function->Call(v8::Local<v8::Object>::New(isolate, gThis_),
         0, nullptr);
-    if (try_catch.HasCaught())
+    if (try_catch.HasCaught()) {
       LOGE("Exception when running terminate handler");
+      if (!try_catch.Message().IsEmpty())
+        LOGE("%s", *v8::String::Utf8Value(try_catch.Message()->Get()));
+      try_catch.ReThrow();
+    }
   });
 }
 
@@ -104,8 +112,12 @@ void SetPauseHandler() {
     v8::TryCatch try_catch;
     handler_function->Call(v8::Local<v8::Object>::New(isolate, gThis_),
         0, nullptr);
-    if (try_catch.HasCaught())
+    if (try_catch.HasCaught()) {
       LOGE("Exception when running pause handler");
+      if (!try_catch.Message().IsEmpty())
+        LOGE("%s", *v8::String::Utf8Value(try_catch.Message()->Get()));
+      try_catch.ReThrow();
+    }
   });
 }
 
@@ -122,8 +134,12 @@ void SetResumeHandler() {
     v8::TryCatch try_catch;
     handler_function->Call(v8::Local<v8::Object>::New(isolate, gThis_),
         0, nullptr);
-    if (try_catch.HasCaught())
+    if (try_catch.HasCaught()) {
       LOGE("Exception when running resume handler");
+      if (!try_catch.Message().IsEmpty())
+        LOGE("%s", *v8::String::Utf8Value(try_catch.Message()->Get()));
+      try_catch.ReThrow();
+    }
   });
 }
 
@@ -140,8 +156,12 @@ void SetServiceHandler() {
     v8::TryCatch try_catch;
     handler_function->Call(v8::Local<v8::Object>::New(isolate, gThis_),
         0, nullptr);
-    if (try_catch.HasCaught())
+    if (try_catch.HasCaught()) {
       LOGE("Exception when running service handler");
+      if (!try_catch.Message().IsEmpty())
+        LOGE("%s", *v8::String::Utf8Value(try_catch.Message()->Get()));
+      try_catch.ReThrow();
+    }
   });
 }
 

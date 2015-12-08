@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // ES6 class reference
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
@@ -18,7 +18,7 @@ class Person {
   }
 
   getGreetings() {
-    return "Hello, My name is "+ this.name;
+    return 'Hello, My name is '+ this.name;
   }
 
   static howManyPeople() {
@@ -38,5 +38,5 @@ if (require.main === module) {
   console.log(park.name);
   console.log(park.getGreetings());
 
-  console.log("People count : " + Person.howManyPeople());
+  console.log('People count : ' + Person.howManyPeople());
 }

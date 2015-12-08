@@ -41,7 +41,7 @@ function PowerManager() {
  */
 PowerManager.prototype.request = function(resource, state) {
   if (PowerResource.indexOf(resource) < 0 || PowerState.indexOf(state) < 0) {
-    throw "TypeMismatch Error";
+    throw 'TypeMismatch Error';
   }
 
   var args = {
@@ -60,7 +60,7 @@ PowerManager.prototype.request = function(resource, state) {
  */
 PowerManager.prototype.release = function(resource) {
   if (PowerResource.indexOf(resource) < 0) {
-    throw "TypeMismatch Error";
+    throw 'TypeMismatch Error';
   }
 
   var args = {
@@ -95,11 +95,11 @@ PowerManager.prototype.getScreenBrightness = function() {
     'cmd': 'getScreenBrightness'
   };
   var ret = extension.internal.sendSyncMessage(JSON.stringify(args));
-  if (ret == "ERR")
+  if (ret == 'ERR')
     return false;
   else
     return parseFloat(ret);
-}
+};
 
 /**
  * Sets the screen brightness level for an application, from 0 to 1.
@@ -111,7 +111,7 @@ PowerManager.prototype.setScreenBrightness = function(brightness) {
     'brightness': brightness
   };
   extension.postMessage(JSON.stringify(args));
-}
+};
 
 /**
  * Returns true if the screen is on.
@@ -122,8 +122,8 @@ PowerManager.prototype.isScreenOn = function() {
     'cmd': 'isScreenOn'
   };
   var ret = extension.internal.sendSyncMessage(JSON.stringify(args));
-  return (ret == 'true')
-}
+  return (ret == 'true');
+};
 
 /**
  * Restores the screen brightness to the system default setting value.
@@ -133,7 +133,7 @@ PowerManager.prototype.restoreScreenBrightness = function() {
     'cmd': 'restoreScreenBrightness'
   };
   extension.postMessage(JSON.stringify(args));
-}
+};
 
 /**
  * Turns on the screen.
@@ -143,7 +143,7 @@ PowerManager.prototype.turnScreenOn = function() {
     'cmd': 'turnScreenOn'
   };
   extension.postMessage(JSON.stringify(args));
-}
+};
 
 /**
  * Turns off the screen.

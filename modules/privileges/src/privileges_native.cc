@@ -19,13 +19,17 @@
 #include <unistd.h>
 
 #include <app_manager.h>
+#include <dlog.h>
 #include <pkgmgr-info.h>
 #include <sys/smack.h>
 #include <cynara/cynara-client.h>
 
 #include <string>
 
-#include "log.h"
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
+#define LOG_TAG "JSNative"
 
 namespace privileges {
 

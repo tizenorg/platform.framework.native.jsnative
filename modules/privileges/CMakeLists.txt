@@ -14,7 +14,7 @@ INSTALL(FILES
 
 # Native Binding Module
 PKG_CHECK_MODULES(TARGET_PRIVILEGES_NATIVE_DEPS REQUIRED
-    nodejs
+    dlog nodejs
     cynara-client libsmack
     pkgmgr-info capi-appfw-app-manager
 )

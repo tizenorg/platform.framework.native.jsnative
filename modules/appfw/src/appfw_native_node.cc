@@ -26,7 +26,7 @@
 #ifdef LOG_TAG
 #undef LOG_TAG
 #endif
-#define LOG_TAG "JS_BINDING"
+#define LOG_TAG "JSNative"
 
 namespace {
 

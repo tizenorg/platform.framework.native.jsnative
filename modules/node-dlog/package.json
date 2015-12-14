@@ -1,0 +1,10 @@
+{
+  "name": "node-dlog",
+  "version": "0.0.1",
+  "description": "Dlog utility",
+  "main": "./build/Release/node-dlog",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

@@ -22,7 +22,7 @@
 #ifdef LOG_TAG
 #undef LOG_TAG
 #endif
-#define LOG_TAG "JS_BINDING"
+#define LOG_TAG "JSNative"
 
 namespace {
 static void WeakCallback(const v8::WeakCallbackData<v8::Object,

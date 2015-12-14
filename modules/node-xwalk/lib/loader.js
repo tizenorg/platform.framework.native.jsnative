@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 function error(msg) {
-  console.error("ERR: " + msg);
+  require('node-dlog').loge('node-xwalk: ' + msg);
 }
 
 // Cached set of extension modules

@@ -6,10 +6,14 @@
 #include "extension_adapter.h"
 
 #include <string.h>
+#include <dlog.h>
 
 #include <string>
 
-#include "log.h"
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
+#define LOG_TAG "JSNative"
 
 namespace xwalk {
 namespace extensions {

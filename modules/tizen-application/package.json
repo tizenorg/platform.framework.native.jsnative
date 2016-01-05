@@ -1,0 +1,10 @@
+{
+  "name": "tizen-application",
+  "version": "0.0.1",
+  "description": "Module for UIApplication",
+  "main": "tizen-application.js",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

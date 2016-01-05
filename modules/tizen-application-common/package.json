@@ -1,0 +1,10 @@
+{
+  "name": "tizen-application-common",
+  "version": "0.0.1",
+  "description": "Base module for application",
+  "main": "tizen-application-common.js",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

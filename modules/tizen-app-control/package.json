@@ -1,0 +1,10 @@
+{
+  "name": "tizen-app-control",
+  "version": "0.0.1",
+  "description": "Module for AppControl",
+  "main": "tizen-app-control.js",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

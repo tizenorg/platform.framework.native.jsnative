@@ -1,0 +1,15 @@
+{
+  "name": "tizen-application",
+  "version": "0.0.1",
+  "description": "Module for UIApplication",
+  "main": "tizen-application.xwalk",
+  "dependencies": {
+    "tizen-application-common": ">= 0.0.1",
+    "tizen-app-control": ">= 0.0.1",
+    "gcontext": ">= 0.0.1"
+  },
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

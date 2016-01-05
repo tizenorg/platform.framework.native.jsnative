@@ -1,0 +1,13 @@
+{
+  "name": "tizen-application-common",
+  "version": "0.0.1",
+  "description": "Base module for application",
+  "main": "tizen-application-common.xwalk",
+  "dependencies": {
+    "tizen-app-control": ">= 0.0.1"
+  },
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

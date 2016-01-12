@@ -1,0 +1,10 @@
+{
+  "name": "tizen-app-preference",
+  "version": "0.0.1",
+  "description": "Module for application preference",
+  "main": "tizen-app-preference.xwalk",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

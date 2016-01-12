@@ -95,7 +95,7 @@ void UiAppInstance::HandleMessage(const char* msg) {
   // parse json object
 }
 
-void UiAppInstance::HandleSyncMessage(const char* msg) {
+void UiAppInstance::HandleSyncMessage(const char* /*msg*/) {
   // parse json object
 }
 
@@ -118,7 +118,7 @@ void UiAppInstance::HandleStart(const std::string& async_id,
     PostMessage(picojson::value(obj).serialize().c_str());
     AppFW::GetInstance()->set_create_handler(nullptr);
   });
-  if(!AppFW::GetInstance()->Init(argc, argv)) {
+  if (!AppFW::GetInstance()->Init(argc, argv)) {
     picojson::value::object obj;
     obj["asyncid"] = picojson::value(async_id);
     obj["result"] = picojson::value("Fail");

@@ -166,7 +166,7 @@ DBusOperation::~DBusOperation() {
 
   const auto iter = s_objects_.find(this);
 
-  if (s_objects_.end() != iter){
+  if (s_objects_.end() != iter) {
     s_objects_.erase(iter);
   } else {
     LOGE("Object is not existing in the static pool");

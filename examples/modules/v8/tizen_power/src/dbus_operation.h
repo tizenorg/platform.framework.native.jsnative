@@ -109,5 +109,4 @@ class DBusOperation {
 }  // namespace power
 }  // namespace tizen
 
-
-#endif // EXAMPLES_TIZEN_POWER_DBUS_OPERATION_H_
+#endif  // EXAMPLES_TIZEN_POWER_DBUS_OPERATION_H_

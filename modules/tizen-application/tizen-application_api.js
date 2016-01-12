@@ -5,7 +5,7 @@ var async_map = new Map();
 
 function native_sync_call(method, parameter) {
   var args = {};
-  args['cmd'] = method;
+  args.cmd = method;
   args = Object.assign(args, parameter);
   try {
     return JSON.parse(extension.internal.sendSyncMessage(JSON.stringify(args)));

@@ -1,0 +1,163 @@
+/*
+ * Copyright (c) 2016 Samsung Electronics Co., Ltd All Rights Reserved
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+#include "sound_manager_util.h"
+#include <dlog.h>
+
+namespace sound {
+
+const std::map<std::string, sound_device_mask_e> SoundManagerUtil::sound_device_mask_map_ = {
+    {"all", SOUND_DEVICE_ALL_MASK},
+    {"in", SOUND_DEVICE_IO_DIRECTION_IN_MASK},
+    {"out", SOUND_DEVICE_IO_DIRECTION_OUT_MASK},
+    {"both", SOUND_DEVICE_IO_DIRECTION_BOTH_MASK},
+    {"internal", SOUND_DEVICE_TYPE_INTERNAL_MASK},
+    {"external", SOUND_DEVICE_TYPE_EXTERNAL_MASK },
+    {"activated", SOUND_DEVICE_STATE_ACTIVATED_MASK},
+    {"deactivated", SOUND_DEVICE_STATE_DEACTIVATED_MASK}
+};
+
+SoundManagerUtil::SoundManagerUtil() {
+
+}
+
+SoundManagerUtil::~SoundManagerUtil() {
+
+}
+
+const char* SoundManagerUtil::SessionTypeToString(sound_session_type_e type) {
+  LOGD("enter");
+
+  if (type == SOUND_SESSION_TYPE_MEDIA) {
+    return "media";
+  } else if (type == SOUND_SESSION_TYPE_ALARM) {
+    return "alarm";
+  } else if (type == SOUND_SESSION_TYPE_NOTIFICATION) {
+    return "notification";
+  } else if (type == SOUND_SESSION_TYPE_EMERGENCY) {
+    return "emergency";
+  } else if (type == SOUND_SESSION_TYPE_VOIP) {
+    return "voip";
+  } else {
+    LOGE("invalid sound_session_type_e was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+
+std::string SoundManagerUtil::SoundDeviceTypeToString(sound_device_type_e type) {
+  LOGD("Enter");
+  switch (type) {
+    case SOUND_DEVICE_BUILTIN_SPEAKER:
+      return "builtin-speaker";
+    case SOUND_DEVICE_BUILTIN_RECEIVER:
+      return "builtin-receiver";
+    case SOUND_DEVICE_BUILTIN_MIC:
+      return "builtin-mic";
+    case SOUND_DEVICE_AUDIO_JACK:
+      return "audio-jack";
+    case SOUND_DEVICE_BLUETOOTH:
+      return "bluetooth";
+    case SOUND_DEVICE_HDMI:
+      return "hdmi";
+    case SOUND_DEVICE_MIRRORING:
+      return "mirroring";
+    case SOUND_DEVICE_USB_AUDIO:
+      return "usb-audio";
+    default:
+      LOGE("Invalid sound_device_type_e: %d", type);
+      return "";
+  }
+}
+
+std::string  SoundManagerUtil::SoundIOTypeToString(sound_device_io_direction_e direction) {
+  LOGD("Enter");
+  switch (direction) {
+    case SOUND_DEVICE_IO_DIRECTION_IN:
+      return "in";
+    case SOUND_DEVICE_IO_DIRECTION_OUT:
+      return "out";
+    case SOUND_DEVICE_IO_DIRECTION_BOTH:
+      return "both";
+    default:
+      LOGE("Invalid sound_device_io_direction_e: %d", direction);
+      return "";
+  }
+}
+
+std::string  SoundManagerUtil::SoundStateToString(sound_device_state_e  state) {
+  LOGD("Enter");
+  switch (state) {
+    case SOUND_DEVICE_STATE_ACTIVATED:
+      return "activated";
+    case SOUND_DEVICE_STATE_DEACTIVATED:
+      return "deactivated";
+    default:
+      LOGE("Invalid sound_device_state_e: %d", state);
+      return "";
+  }
+}
+
+sound_device_mask_e SoundManagerUtil::FilterStringToEnum(const std::string& key) {
+  LOGD("enter");
+  if (sound_device_mask_map_.find(key) == sound_device_mask_map_.end()) {
+    LOGD("Platform enum value not found for key ");
+    return SOUND_DEVICE_ALL_MASK;
+  }
+
+  return sound_device_mask_map_.at(key);
+}
+
+const char* SoundManagerUtil::SessionStartOptionToString(sound_session_option_for_starting_e option) {
+  LOGD("enter");
+
+  if (option == SOUND_SESSION_OPTION_MIX_WITH_OTHERS_WHEN_START) {
+    return "mix-with-others";
+  } else if (option == SOUND_SESSION_OPTION_PAUSE_OTHERS_WHEN_START) {
+    return "pause-others";
+  } else {
+    LOGE("invalid sound_session_option_for_starting_e was passed");
+    // TODO: throw Exception
+  }
+}
+
+const char* SoundManagerUtil::SessionPlayingOptionToString(sound_session_option_for_during_play_e option) {
+  LOGD("enter");
+
+  if (option == SOUND_SESSION_OPTION_INTERRUPTIBLE_DURING_PLAY) {
+    return "interruptible-during-play";
+  } else if (option == SOUND_SESSION_OPTION_UNINTERRUPTIBLE_DURING_PLAY) {
+    return "uninterruptible-during-play";
+  } else {
+    LOGE("invalid sound_session_option_for_during_play_e was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+const char* SoundManagerUtil::SessionResumptionOptionToString(sound_session_option_for_resumption_e option) {
+  LOGD("enter");
+
+  if (option == SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM) {
+    return "by-system";
+  } else if (option == SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM_OR_MEDIA_PAUSED) {
+    return "by-system-or-media-paused";
+  } else {
+    LOGE("invalid sound_session_option_for_resumption_e was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+}  // namespace sound

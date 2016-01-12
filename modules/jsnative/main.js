@@ -29,41 +29,41 @@ JSNative._Initialize = function() {
   var tag = 'JSNative';
   var dlog = require('node-dlog');
   var util = require('util');
-  console.log = function(){
+  console.log = function() {
     dlog.logd(tag, util.format.apply(this, arguments));
   };
-  console.info = function(){
+  console.info = function() {
     dlog.logv(tag, util.format.apply(this, arguments));
   };
-  console.error = function(){
+  console.error = function() {
     dlog.loge(tag, util.format.apply(this, arguments));
   };
   console.warn = console.info;
-  console.logd = function(){
-    if( arguments.length > 1 ){
+  console.logd = function() {
+    if (arguments.length > 1) {
       dlog.logd(
           arguments[0],
-          util.format.apply(this, Array.prototype.slice.call(arguments,1)));
-    }else{
-      dlog.logd(util.format.apply(this, arguments) );
+          util.format.apply(this, Array.prototype.slice.call(arguments, 1)));
+    } else {
+      dlog.logd(util.format.apply(this, arguments));
     }
   };
-  console.logv = function(){
-    if( arguments.length > 1 ){
+  console.logv = function() {
+    if (arguments.length > 1) {
       dlog.logv(
           arguments[0],
-          util.format.apply(this, Array.prototype.slice.call(arguments,1)));
-    }else{
-      dlog.logv(util.format.apply(this, arguments) );
+          util.format.apply(this, Array.prototype.slice.call(arguments, 1)));
+    } else {
+      dlog.logv(util.format.apply(this, arguments));
     }
   };
-  console.loge = function(){
-    if( arguments.length > 1 ){
+  console.loge = function() {
+    if (arguments.length > 1) {
       dlog.loge(
           arguments[0],
-          util.format.apply(this, Array.prototype.slice.call(arguments,1)) );
-    }else{
-      dlog.loge(util.format.apply(this, arguments) );
+          util.format.apply(this, Array.prototype.slice.call(arguments, 1)));
+    } else {
+      dlog.loge(util.format.apply(this, arguments));
     }
   };
 };

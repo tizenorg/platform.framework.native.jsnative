@@ -122,7 +122,7 @@ function _toLongLong(val) {
   // of requested val. We're converting the val to signed long and then pass it
   // to C++ to get the value in required range.
   return native_.getResultObject(native_.callSync('Utils_toLongLong', {
-    n : _toLong(val)
+    n: _toLong(val)
   }));
 }
 
@@ -143,7 +143,7 @@ function _toUnsignedLongLong(val) {
   // of requested val. We're converting the val to signed long and then pass it
   // to C++ to get the value in required range.
   return native_.getResultObject(native_.callSync('Utils_toUnsignedLongLong', {
-    n : _toLong(val)
+    n: _toLong(val)
   }));
 }
 
@@ -313,18 +313,20 @@ var Validator = function() {
  *
  * Description of expected arguments.
  * This is an array of objects, each object represents one argument.
- * First object in this array describes first argument, second object describes second
- * argument, and so on.
+ * First object in this array describes first argument, second object describes
+ * second argument, and so on.
  * Object describing an argument needs to have two properties:
  *   - name - name of the argument,
- *   - type - type of the argument, only values specified in Validator.Types are allowed.
+ *   - type - type of the argument, only values specified in Validator.
+ *            Types are allowed.
  * Other properties, which may appear:
  *   - optional - if set to value which evaluates to true, argument is optional
  *   - nullable - if set to to true, argument may be set to null
  *   - values - required in case of some objects, value depends on type
- *   - validator - function which accepts a single parameter and returns true or false;
- *                 if this property is present, this function will be executed,
- *                 argument converted to expected type is going to be passed to this function
+ *   - validator - function which accepts a single parameter and returns true
+ *                 or false if this property is present, this function will be
+ *                 executed, argument converted to expected type is going to be
+ *                 passed to this function
  *
  * @param {Array} a - arguments of a method
  * @param {Array} d - description of expected arguments
@@ -401,7 +403,8 @@ var Validator = function() {
  *   {
  *     name: 'first',
  *     type: Validator.Types.ARRAY,
- *     values: Validator.Types.DOUBLE // converts elements, only primitive types are supported
+ *     values: Validator.Types.DOUBLE // converts elements,
+ *                                    // only primitive types are supported
  *   }
  * ]
  * @code
@@ -409,7 +412,8 @@ var Validator = function() {
  *   {
  *     name: 'first',
  *     type: Validator.Types.ENUM,
- *     values: ['SCREEN_DIM', 'SCREEN_NORMAL', 'CPU_AWAKE'] // array of allowed values
+ *     values: ['SCREEN_DIM', 'SCREEN_NORMAL', 'CPU_AWAKE']
+ *                                    // array of allowed values
  *   }
  * ]
  */
@@ -557,7 +561,8 @@ Validator.prototype.validateArgs = function(a, d) {
           break;
 
         case this.Types.FILE_REFERENCE:
-          if (_type.isObject(val) && 'File' === val.constructor.name && val.fullPath) {
+          if (_type.isObject(val) && 'File' === val.constructor.name &&
+              val.fullPath) {
             val = val.fullPath;
           }
           val = _converter.toString(val, nullable);

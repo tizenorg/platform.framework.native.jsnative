@@ -14,7 +14,7 @@ var ExtensionModule = function(ext_path) {
 };
 
 ExtensionModule.prototype.load = function() {
-  var native_ = require("../build/Release/node-xwalk-native");
+  var native_ = require('../build/Release/node-xwalk-native');
   this.extension_info = native_.getExtensionInfo(this.extension_path);
   if (!this.extension_info) {
     error('Error during get information of extension "' +
@@ -41,7 +41,7 @@ ExtensionModule.prototype.load = function() {
   try {
     var func = eval(jscode);
     this.instance = func({
-      instance_id : this.instance_id,
+      instance_id: this.instance_id,
       postMessage: function(msg) {
         native_.postMessage(this.instance_id, msg);
       },
@@ -103,7 +103,7 @@ ExtensionLoader.prototype.findExtensionInPath = function(name) {
 };
 
 ExtensionLoader.prototype.setRuntimeVariable = function(key, value) {
-  var native_ = require("../build/Release/native");
+  var native_ = require('../build/Release/node-xwalk-native');
   native_.setRuntimeVariable(key, value);
 };
 

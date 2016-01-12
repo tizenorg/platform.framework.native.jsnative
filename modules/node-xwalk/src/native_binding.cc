@@ -251,7 +251,7 @@ void NativeBinding::PostMessageToJSCallback(
   v8::Local<v8::Value> args[1];
 
   if (binary) {
-    args[0] = v8::ArrayBuffer::New(isolate, (void*)(msg), size,
+    args[0] = v8::ArrayBuffer::New(isolate, (void*)(msg), size,  // NOLINT
         v8::ArrayBufferCreationMode::kInternalized);
   } else {
     args[0] = v8::String::NewFromUtf8(isolate, msg);

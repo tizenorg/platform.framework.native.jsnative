@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-var native_ = require("../build/Release/privileges_native");
+var native_ = require('../build/Release/privileges_native');
 
 function Privileges() {
   /**
@@ -96,11 +96,12 @@ Privileges.prototype.checkPrivilegeAccess = function(privilege) {
   return native_.checkPrivilegeAccess(privilege);
 };
 
-Privileges.prototype.checkPrivilegeAccess4Ver = function(new_ver, new_priv, old_priv) {
+Privileges.prototype.checkPrivilegeAccess4Ver =
+    function(new_ver, new_priv, old_priv) {
   var app_ver = this.getPkgApiVersion();
 
-  var arr_new_ver = new_ver.split(".");
-  var arr_app_ver = app_ver.split(".");
+  var arr_new_ver = new_ver.split('.');
+  var arr_app_ver = app_ver.split('.');
   var num_new;
   var num_app;
   var sel = 0;

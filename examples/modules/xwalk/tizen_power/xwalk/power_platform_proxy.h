@@ -42,4 +42,4 @@ class PowerPlatformProxy {
 
 }  // namespace sample
 
-#endif // POWER_POWER_PLATFORM_PROXY_H_
+#endif  // POWER_POWER_PLATFORM_PROXY_H_

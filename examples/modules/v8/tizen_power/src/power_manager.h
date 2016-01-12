@@ -54,6 +54,7 @@ class PowerManager {
   int SetScreenState(bool onoff);
 
   static PowerManager* GetInstance();
+
  private:
   int GetPlatformBrightness(int* result);
   int SetPlatformBrightness(int brightness);
@@ -80,5 +81,4 @@ class PowerManager {
 }  // namespace power
 }  // namespace tizen
 
-#endif // EXAMPLES_TIZEN_POWER_POWER_MANAGER_H_
-
+#endif  // EXAMPLES_TIZEN_POWER_POWER_MANAGER_H_

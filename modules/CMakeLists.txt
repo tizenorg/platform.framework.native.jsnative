@@ -1,0 +1,12 @@
+ADD_SUBDIRECTORY(jsnative)
+ADD_SUBDIRECTORY(appfw)
+ADD_SUBDIRECTORY(gcontext)
+ADD_SUBDIRECTORY(node-dlog)
+ADD_SUBDIRECTORY(node-xwalk)
+ADD_SUBDIRECTORY(privileges)
+ADD_SUBDIRECTORY(arguments-validator)
+ADD_SUBDIRECTORY(reaper)
+
+ADD_SUBDIRECTORY(tizen-app-control)
+ADD_SUBDIRECTORY(tizen-application)
+ADD_SUBDIRECTORY(tizen-application-common)

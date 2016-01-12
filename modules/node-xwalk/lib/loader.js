@@ -14,7 +14,7 @@ var ExtensionModule = function(ext_path) {
 };
 
 ExtensionModule.prototype.load = function() {
-  var native_ = require("../build/Release/native");
+  var native_ = require("../build/Release/node-xwalk-native");
   this.extension_info = native_.getExtensionInfo(this.extension_path);
   if (!this.extension_info) {
     error('Error during get information of extension "' +

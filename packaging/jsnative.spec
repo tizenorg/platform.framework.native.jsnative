@@ -11,14 +11,17 @@ Source0:    %{name}-%{version}.tar.gz
 Source1:    %{name}.manifest
 
 BuildRequires: cmake
-BuildRequires: pkgconfig(appcore-efl)
-BuildRequires: pkgconfig(aul)
-BuildRequires: pkgconfig(dlog)
 BuildRequires: pkgconfig(nodejs)
+BuildRequires: pkgconfig(xwalk-extensions-common)
+BuildRequires: pkgconfig(dlog)
 BuildRequires: pkgconfig(libsmack)
 BuildRequires: pkgconfig(cynara-client)
+BuildRequires: pkgconfig(appcore-efl)
+BuildRequires: pkgconfig(aul)
+BuildRequires: pkgconfig(capi-appfw-application)
 BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
+
 
 Requires: nodejs
 

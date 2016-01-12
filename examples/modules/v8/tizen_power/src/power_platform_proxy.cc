@@ -22,22 +22,18 @@ namespace power {
 PowerPlatformProxy::PowerPlatformProxy() :
     dbus_op_("org.tizen.system.deviced",
              "/Org/Tizen/System/DeviceD/Display",
-             "org.tizen.system.deviced.display")
-{
+             "org.tizen.system.deviced.display") {
 }
 
-PowerPlatformProxy::~PowerPlatformProxy()
-{
+PowerPlatformProxy::~PowerPlatformProxy() {
 }
 
-PowerPlatformProxy& PowerPlatformProxy::GetInstance()
-{
+PowerPlatformProxy& PowerPlatformProxy::GetInstance() {
   static PowerPlatformProxy instance;
   return instance;
 }
 
-int PowerPlatformProxy::LockState(int* result)
-{
+int PowerPlatformProxy::LockState(int* result) {
   DBusOperationArguments args;
   args.AddArgumentString("lcddim");
   args.AddArgumentString("staycurstate");
@@ -47,8 +43,7 @@ int PowerPlatformProxy::LockState(int* result)
   return dbus_op_.InvokeSyncGetInt("lockstate", &args, result);
 }
 
-int PowerPlatformProxy::UnlockState(int* result)
-{
+int PowerPlatformProxy::UnlockState(int* result) {
   DBusOperationArguments args;
   args.AddArgumentString("lcddim");
   args.AddArgumentString("keeptimer");
@@ -56,13 +51,11 @@ int PowerPlatformProxy::UnlockState(int* result)
   return dbus_op_.InvokeSyncGetInt("unlockstate", &args, result);
 }
 
-int PowerPlatformProxy::SetBrightnessFromSettings(int* result)
-{
+int PowerPlatformProxy::SetBrightnessFromSettings(int* result) {
   return dbus_op_.InvokeSyncGetInt("ReleaseBrightness", nullptr, result);
 }
 
-int PowerPlatformProxy::SetBrightness(int val, int* result)
-{
+int PowerPlatformProxy::SetBrightness(int val, int* result) {
   DBusOperationArguments args;
   args.AddArgumentInt32(val);
 

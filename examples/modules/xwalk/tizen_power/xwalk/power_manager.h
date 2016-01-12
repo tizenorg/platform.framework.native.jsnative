@@ -53,6 +53,7 @@ class PowerManager {
   int SetScreenState(bool onoff);
 
   static PowerManager* GetInstance();
+
  private:
   int GetPlatformBrightness(int* result);
   int SetPlatformBrightness(int brightness);
@@ -78,5 +79,5 @@ class PowerManager {
 
 }  // namespace sample
 
-#endif // POWER_POWER_MANAGER_H_
+#endif  // POWER_POWER_MANAGER_H_
 

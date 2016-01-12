@@ -1,24 +1,29 @@
 #!/usr/bin/env node
-var appfw = require('tizen-application');
+var app = require('tizen-application');
 
-appfw.on('appcontrol' , function(appcontrol) {
-  console.log('!! appcontrol operation : ' + appcontrol.operation);
+app.on('appcontrol', function(appcontrol) {
+  // Handle the launch request
+  console.log('[appcontrol] operation : ' + appcontrol.operation);
 });
 
-appfw.on('pause' , function() {
-  console.log('!! pause !!');
+app.on('pause', function() {
+  // Take necessary actions when application becomes invisible.
+  console.log('[pause]');
 });
 
-appfw.on('resume' , function() {
-  console.log('!! resume !!');
+app.on('resume', function() {
+  // Take necessary actions when application becomes visible.
+  console.log('[resume]');
 });
 
-appfw.on('terminate' , function() {
-  console.log('!! terminate !!');
+app.on('terminate', function() {
+  // Release all resources.
+  console.log('[terminate]');
 });
 
-appfw.start().then(function(){
-  console.log('!! started !!');
-}).catch(function(){
-  console.log('!! fail to run !!');
+app.start().then(function() {
+  // Initialize UI resources and application's data.
+  console.log('[started]');
+}).catch(function(e) {
+  console.log('Failed to start application : ' + e.message);
 });

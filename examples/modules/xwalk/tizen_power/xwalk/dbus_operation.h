@@ -107,4 +107,4 @@ class DBusOperation {
 
 }  // namespace sample
 
-#endif // POWER_DBUS_OPERATION_H_
+#endif  // POWER_DBUS_OPERATION_H_

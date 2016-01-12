@@ -77,26 +77,29 @@ PowerManager::~PowerManager() {
     LOGE("device_remove_callback failed (%d)", ret);
 }
 
-PowerManager* PowerManager::GetInstance(){
+PowerManager* PowerManager::GetInstance() {
   static PowerManager instance;
   return &instance;
 }
 
-void PowerManager::OnPlatformStateChangedCB(device_callback_e type, void* value, void* user_data) {
+void PowerManager::OnPlatformStateChangedCB(
+    device_callback_e type, void* value, void* user_data) {
   PowerManager* object = static_cast<PowerManager*>(user_data);
-  if (object == NULL){
+  if (object == NULL) {
     LOGE("User data is NULL");
     return;
   }
-  if (type != DEVICE_CALLBACK_DISPLAY_STATE){
+  if (type != DEVICE_CALLBACK_DISPLAY_STATE) {
     LOGE("type is not DISPLAY_STATE");
     return;
   }
-  display_state_e state = static_cast<display_state_e>(reinterpret_cast<long long>(value));
+  display_state_e state =
+      static_cast<display_state_e>(reinterpret_cast<long long>(value)); // NOLINT
   PowerState current = POWER_STATE_SCREEN_OFF;
   switch (state) {
     case DISPLAY_STATE_NORMAL :
-      current = object->bright_state_enabled_ ? POWER_STATE_SCREEN_BRIGHT : POWER_STATE_SCREEN_NORMAL;
+      current = object->bright_state_enabled_ ?
+          POWER_STATE_SCREEN_BRIGHT : POWER_STATE_SCREEN_NORMAL;
       break;
     case DISPLAY_STATE_SCREEN_DIM :
       current = POWER_STATE_SCREEN_DIM;
@@ -128,7 +131,7 @@ int PowerManager::Request(PowerResource resource, PowerState state) {
   if (resource == POWER_RESOURCE_CPU && state != POWER_STATE_CPU_AWAKE)
     return 1;
 
-  if(current_requested_state_ == POWER_STATE_SCREEN_DIM) {
+  if (current_requested_state_ == POWER_STATE_SCREEN_DIM) {
     int result = 0;
     int err = PowerPlatformProxy::GetInstance().UnlockState(&result);
     if (err || result < 0) {
@@ -179,7 +182,8 @@ int PowerManager::Request(PowerResource resource, PowerState state) {
       int err = SetPlatformBrightness(max_brightness);
       if (err)
         return err;
-      LOGD("Succeeded setting the brightness to a max level: %d", max_brightness);
+      LOGD("Succeeded setting the brightness to a max level: %d",
+           max_brightness);
 
       ret = device_display_change_state(DISPLAY_STATE_NORMAL);
       if (DEVICE_ERROR_NONE != ret) {
@@ -223,7 +227,8 @@ int PowerManager::Release(PowerResource resource) {
 
     if (bright_state_enabled_) {
       int result = 0;
-      int err = PowerPlatformProxy::GetInstance().SetBrightnessFromSettings(&result);
+      int err =
+          PowerPlatformProxy::GetInstance().SetBrightnessFromSettings(&result);
       if (err || DEVICE_ERROR_NONE != result) {
         LOGE("Platform error while setting restore brightness %d", result);
         return 1;
@@ -232,7 +237,7 @@ int PowerManager::Release(PowerResource resource) {
     bright_state_enabled_ = false;
 
     display_state_e platform_state = DISPLAY_STATE_NORMAL;
-    if(current_requested_state_ == POWER_STATE_SCREEN_DIM) {
+    if (current_requested_state_ == POWER_STATE_SCREEN_DIM) {
       int result = 0;
       int err = PowerPlatformProxy::GetInstance().UnlockState(&result);
       if (err || DEVICE_ERROR_NONE != result) {
@@ -275,7 +280,7 @@ int PowerManager::GetScreenBrightness(double* output) {
     LOGE("Platform error while getting brightness: %d", ret);
     return 1;
   }
-  *output = (double)brightness/(double)max_brightness;
+  *output = (double)brightness/(double)max_brightness; // NOLINT
   return 0;
 }
 
@@ -289,7 +294,7 @@ int PowerManager::SetScreenBrightness(double brightness) {
     return 1;
   }
 
-  int platform_brightness = (int)(brightness * max_brightness);
+  int platform_brightness = static_cast<int>(brightness * max_brightness);
   if (platform_brightness == 0) {
     platform_brightness = 1;
   }
@@ -342,7 +347,8 @@ int PowerManager::SetScreenState(bool onoff) {
 
 int PowerManager::RestoreScreenBrightness() {
   int result = 0;
-  int err = PowerPlatformProxy::GetInstance().SetBrightnessFromSettings(&result);
+  int err =
+      PowerPlatformProxy::GetInstance().SetBrightnessFromSettings(&result);
   if (err || DEVICE_ERROR_NONE != result) {
     LOGE("Platform error while restoring brightness %d", result);
     return 1;
@@ -353,12 +359,14 @@ int PowerManager::RestoreScreenBrightness() {
 int PowerManager::SetPlatformBrightness(int brightness) {
   if (current_state_ == POWER_STATE_SCREEN_DIM) {
     current_brightness_ = brightness;
-    LOGD("Current state is not normal state the value is saved in cache: %d", brightness);
+    LOGD("Current state is not normal state the value is saved in cache: %d",
+         brightness);
     should_be_read_from_cache_ = true;
     return 0;
   } else if (current_state_ == POWER_STATE_SCREEN_BRIGHT) {
     current_brightness_ = brightness;
-    LOGD("Current state is not normal state the value is saved in cache: %d", brightness);
+    LOGD("Current state is not normal state the value is saved in cache: %d",
+         brightness);
     should_be_read_from_cache_ = true;
     return 0;
   } else {
@@ -366,7 +374,8 @@ int PowerManager::SetPlatformBrightness(int brightness) {
   }
 
   int result = 0;
-  int err = PowerPlatformProxy::GetInstance().SetBrightness(brightness, &result);
+  int err =
+      PowerPlatformProxy::GetInstance().SetBrightness(brightness, &result);
   if (err || result != 0) {
     LOGE("Platform error while setting %d brightness: %d", brightness, result);
     return 1;
@@ -380,14 +389,16 @@ int PowerManager::GetPlatformBrightness(int* result) {
   int brightness = 0;
 
   int is_custom_mode = 0;
-  int err = PowerPlatformProxy::GetInstance().IsCustomBrightness(&is_custom_mode);
+  int err =
+      PowerPlatformProxy::GetInstance().IsCustomBrightness(&is_custom_mode);
 
   if (err) {
     LOGE("Failed to check if custom brightness is set.");
     return err;
   }
 
-  if ((is_custom_mode && current_brightness_ != -1) || should_be_read_from_cache_) {
+  if ((is_custom_mode && current_brightness_ != -1) ||
+       should_be_read_from_cache_) {
     LOGD("return custom brightness %d", current_brightness_);
     *result = current_brightness_;
     return 0;
@@ -396,7 +407,8 @@ int PowerManager::GetPlatformBrightness(int* result) {
   int is_auto_brightness = 0;
   vconf_get_int(VCONFKEY_SETAPPL_BRIGHTNESS_AUTOMATIC_INT, &is_auto_brightness);
   if (is_auto_brightness == 1) {
-    int ret = vconf_get_int(VCONFKEY_SETAPPL_PREFIX"/automatic_brightness_level" /*prevent RSA build error*/, &brightness);
+    int ret = vconf_get_int(VCONFKEY_SETAPPL_PREFIX"/automatic_brightness_level"
+        /*prevent RSA build error*/, &brightness);
     if (ret != 0) {
       // RSA binary has no AUTOMATIC_BRIGHTNESS
       vconf_get_int(VCONFKEY_SETAPPL_LCD_BRIGHTNESS, &brightness);
@@ -411,7 +423,8 @@ int PowerManager::GetPlatformBrightness(int* result) {
     }
   }
 
-  LOGD("BRIGHTNESS(%s) %d", is_auto_brightness == 1 ? "auto" : "fix" , brightness);
+  LOGD("BRIGHTNESS(%s) %d",
+       is_auto_brightness == 1 ? "auto" : "fix" , brightness);
 
   *result = brightness;
 

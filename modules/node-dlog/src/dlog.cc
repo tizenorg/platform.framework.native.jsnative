@@ -22,78 +22,72 @@
 #endif
 #define LOG_TAG "JSNative"
 
-using namespace node;
-using namespace v8;
+namespace jsnative {
 
-namespace wrt {
-namespace service {
-
-static void logd(const char* tag, const char* format, ...){
-    va_list args;
-    va_start(args, format);
-    LOG_VA(LOG_DEBUG, tag, format, args);
-    va_end(args);
+static void logd(const char* tag, const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  LOG_VA(LOG_DEBUG, tag, format, args);
+  va_end(args);
 }
 
-static void logv(const char* tag, const char* format, ...){
-    va_list args;
-    va_start(args, format);
-    LOG_VA(LOG_VERBOSE, tag, format, args);
-    va_end(args);
+static void logv(const char* tag, const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  LOG_VA(LOG_VERBOSE, tag, format, args);
+  va_end(args);
 }
 
-static void loge(const char* tag, const char* format, ...){
-    va_list args;
-    va_start(args, format);
-    LOG_VA(LOG_ERROR, tag, format, args);
-    va_end(args);
+static void loge(const char* tag, const char* format, ...) {
+  va_list args;
+  va_start(args, format);
+  LOG_VA(LOG_ERROR, tag, format, args);
+  va_end(args);
 }
 
-static void logD(const FunctionCallbackInfo<Value>& args){
-    Isolate* isolate = Isolate::GetCurrent();
-    HandleScope scope(isolate);
-    if( args.Length() == 1 ){
-        logd(LOG_TAG, *String::Utf8Value(args[0]->ToString()));
-    }else if( args.Length() > 1 ){
-        logd(*String::Utf8Value(args[0]->ToString()),
-             *String::Utf8Value(args[1]->ToString()));
-    }
-    args.GetReturnValue().Set(Undefined(isolate));
+static void logD(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::HandleScope scope(isolate);
+  if (args.Length() == 1) {
+    logd(LOG_TAG, *v8::String::Utf8Value(args[0]->ToString()));
+  } else if (args.Length() > 1) {
+    logd(*v8::String::Utf8Value(args[0]->ToString()),
+         *v8::String::Utf8Value(args[1]->ToString()));
+  }
+  args.GetReturnValue().Set(v8::Undefined(isolate));
 }
 
-static void logV(const FunctionCallbackInfo<Value>& args){
-    Isolate* isolate = Isolate::GetCurrent();
-    HandleScope scope(isolate);
-    if( args.Length() == 1 ){
-        logv(LOG_TAG, *String::Utf8Value(args[0]->ToString()));
-    }else if( args.Length() > 1 ){
-        logv(*String::Utf8Value(args[0]->ToString()),
-             *String::Utf8Value(args[1]->ToString()));
-    }
-    args.GetReturnValue().Set(Undefined(isolate));
+static void logV(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::HandleScope scope(isolate);
+  if (args.Length() == 1) {
+    logv(LOG_TAG, *v8::String::Utf8Value(args[0]->ToString()));
+  } else if (args.Length() > 1) {
+    logv(*v8::String::Utf8Value(args[0]->ToString()),
+         *v8::String::Utf8Value(args[1]->ToString()));
+  }
+  args.GetReturnValue().Set(v8::Undefined(isolate));
 }
 
-static void logE(const FunctionCallbackInfo<Value>& args){
-    Isolate* isolate = Isolate::GetCurrent();
-    HandleScope scope(isolate);
-    if( args.Length() == 1 ){
-        loge(LOG_TAG, *String::Utf8Value(args[0]->ToString()));
-    }else if( args.Length() > 1 ){
-        loge(*String::Utf8Value(args[0]->ToString()),
-             *String::Utf8Value(args[1]->ToString()));
-    }
-    args.GetReturnValue().Set(Undefined(isolate));
+static void logE(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::HandleScope scope(isolate);
+  if (args.Length() == 1) {
+    loge(LOG_TAG, *v8::String::Utf8Value(args[0]->ToString()));
+  } else if (args.Length() > 1) {
+    loge(*v8::String::Utf8Value(args[0]->ToString()),
+         *v8::String::Utf8Value(args[1]->ToString()));
+  }
+  args.GetReturnValue().Set(v8::Undefined(isolate));
 }
 
-static void init(Handle<Object> target) {
-    NODE_SET_METHOD(target, "log", logD);
-    NODE_SET_METHOD(target, "logd", logD);
-    NODE_SET_METHOD(target, "logv", logV);
-    NODE_SET_METHOD(target, "loge", logE);
+static void init(v8::Handle<v8::Object> target) {
+  NODE_SET_METHOD(target, "log", logD);
+  NODE_SET_METHOD(target, "logd", logD);
+  NODE_SET_METHOD(target, "logv", logV);
+  NODE_SET_METHOD(target, "loge", logE);
 }
 
 NODE_MODULE(nodedlog, init);
 
-} // namespace service
-} // namespace wrt
-
+}  // namespace jsnative

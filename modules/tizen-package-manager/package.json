@@ -1,0 +1,6 @@
+{
+  "name": "tizen-package-manager",
+  "version": "0.0.1",
+  "description": "Package Manager module for JSNative",
+  "main": "tizen-package-manager.xwalk"
+}

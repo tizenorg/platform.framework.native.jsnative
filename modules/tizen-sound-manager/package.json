@@ -1,0 +1,6 @@
+{
+  "name": "soundmanager",
+  "version": "0.0.1",
+  "description": "soundmanager module for JSNative",
+  "main": "./soundmanager_api.js",
+}

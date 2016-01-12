@@ -22,7 +22,7 @@ BuildRequires: pkgconfig(capi-appfw-application)
 BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
 BuildRequires: pkgconfig(bundle)
-
+BuildRequires: pkgconfig(capi-appfw-package-manager)
 
 Requires: nodejs
 

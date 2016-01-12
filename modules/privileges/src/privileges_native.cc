@@ -97,7 +97,7 @@ class AccessControl {
 
 }  // namespace
 
-#define THROW_EXCEPTION(isolate,msg) \
+#define THROW_EXCEPTION(isolate, msg) \
   isolate->ThrowException(v8::String::NewFromUtf8(isolate, msg));
 
 // static

@@ -35,7 +35,7 @@ void AppCommonInstance::Initialize() {
   LOGD("Created tizen-application-common instance");
 }
 
-void AppCommonInstance::HandleMessage(const char* msg) {
+void AppCommonInstance::HandleMessage(const char* /*msg*/) {
   // parse json object
 }
 

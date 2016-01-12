@@ -44,4 +44,4 @@ class PowerPlatformProxy {
 }  // namespace power
 }  // namespace tizen
 
-#endif // EXAMPLES_TIZEN_POWER_POWER_PLATFORM_PROXY_H_
+#endif  // EXAMPLES_TIZEN_POWER_POWER_PLATFORM_PROXY_H_

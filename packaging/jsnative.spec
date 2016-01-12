@@ -19,6 +19,7 @@ BuildRequires: pkgconfig(libsmack)
 BuildRequires: pkgconfig(cynara-client)
 BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
+BuildRequires: pkgconfig(xwalk-extensions-common)
 
 Requires: nodejs
 

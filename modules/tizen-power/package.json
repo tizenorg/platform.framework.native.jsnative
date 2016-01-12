@@ -1,0 +1,10 @@
+{
+  "name": "tizen-power",
+  "version": "0.0.1",
+  "description": "Sample for Tizen Power API",
+  "main": "tizen-power.xwalk",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  }
+}

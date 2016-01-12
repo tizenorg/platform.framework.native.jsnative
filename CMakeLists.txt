@@ -24,12 +24,6 @@ ADD_DEFINITIONS("-Wno-deprecated")      # No warnings about deprecated features
 ADD_DEFINITIONS("-std=c++0x")           # accept C++11x standard
 
 SET(GLOBAL_NODE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/node)
+INCLUDE(build/common.cmake)
 
-ADD_SUBDIRECTORY(modules/jsnative)
-ADD_SUBDIRECTORY(modules/appfw)
-ADD_SUBDIRECTORY(modules/gcontext)
-ADD_SUBDIRECTORY(modules/node-dlog)
-ADD_SUBDIRECTORY(modules/node-xwalk)
-ADD_SUBDIRECTORY(modules/privileges)
-ADD_SUBDIRECTORY(modules/arguments-validator)
-ADD_SUBDIRECTORY(modules/reaper)
+ADD_SUBDIRECTORY(modules)

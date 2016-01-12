@@ -1,12 +1,8 @@
 #!/usr/bin/env node
-var appfw = require('appfw');
+var appfw = require('tizen-application');
 
-appfw.on('create' , function() {
-  console.log('!! created !!');
-});
-
-appfw.on('service' , function() {
-  console.log('!! service !!');
+appfw.on('appcontrol' , function(appcontrol) {
+  console.log('!! appcontrol operation : ' + appcontrol.operation);
 });
 
 appfw.on('pause' , function() {
@@ -21,4 +17,8 @@ appfw.on('terminate' , function() {
   console.log('!! terminate !!');
 });
 
-appfw.init('{appid}');
+appfw.start().then(function(){
+  console.log('!! started !!');
+}).catch(function(){
+  console.log('!! fail to run !!');
+});

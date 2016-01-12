@@ -23,7 +23,7 @@ BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
 BuildRequires: pkgconfig(bundle)
 BuildRequires: pkgconfig(capi-media-sound-manager)
-
+BuildRequires: pkgconfig(capi-appfw-package-manager)
 
 Requires: nodejs
 

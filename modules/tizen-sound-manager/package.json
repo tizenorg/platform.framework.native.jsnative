@@ -1,0 +1,10 @@
+{
+  "name": "tizen-sound-manager",
+  "version": "0.0.1",
+  "description": "Module for sound manager",
+  "main": "tizen-sound-manager.xwalk",
+  "author": {
+    "name": "",
+    "email": ""
+  }
+}

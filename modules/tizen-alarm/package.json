@@ -1,0 +1,13 @@
+{
+  "name": "tizen-alarm",
+  "version": "0.0.1",
+  "description": "Module for alarm",
+  "main": "tizen-alarm.xwalk",
+  "dependencies": {
+    "tizen-app-control": ">= 0.0.1"
+  },
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

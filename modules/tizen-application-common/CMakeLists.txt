@@ -7,7 +7,7 @@ ADD_MODULE(${MODULE} XWALK
   SRCS
     app_common_extension.cc
   DEPENDS
-    dlog capi-appfw-application
+    dlog capi-appfw-application bundle
 )
 
 # Copy Project

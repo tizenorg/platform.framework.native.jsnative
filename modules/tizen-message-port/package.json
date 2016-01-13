@@ -1,0 +1,12 @@
+{
+  "name": "tizen-message-port",
+  "version": "0.0.1",
+  "description": "Module for Message Port",
+  "main": "tizen-message-port.xwalk",
+  "dependencies": {
+  },
+  "author": {
+    "name": "Yongseop Kim",
+    "email": "yons.kim@samsung.com"
+  }
+}

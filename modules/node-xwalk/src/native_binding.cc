@@ -259,7 +259,8 @@ void NativeBinding::PostMessageToJSCallback(
 
   v8::Local<v8::Function> func =
       v8::Local<v8::Function>::New(isolate, listener->second);
-  func->Call(v8::Null(isolate), 1, args);
+  auto context = isolate->GetCurrentContext();
+  node::MakeCallback(isolate, context->Global(), func, 1, args);
 }
 
 }  // namespace extensions

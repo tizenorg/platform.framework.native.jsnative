@@ -55,11 +55,10 @@ ExtensionModule.prototype.load = function() {
     return true;
   } catch (err) {
     error('Error during loading extension "' +
-          this.extension_path + '"');
+          this.extension_path);
+    error(err.stack);
     return false;
   }
-
-  return false;
 };
 
 var ExtensionLoader = function() {

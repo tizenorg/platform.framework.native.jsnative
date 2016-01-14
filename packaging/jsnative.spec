@@ -12,19 +12,22 @@ Source1:    %{name}.manifest
 
 BuildRequires: cmake
 BuildRequires: pkgconfig(nodejs)
+BuildRequires: pkgconfig(jsoncpp)
 BuildRequires: pkgconfig(xwalk-extensions-common)
 BuildRequires: pkgconfig(dlog)
 BuildRequires: pkgconfig(libsmack)
 BuildRequires: pkgconfig(cynara-client)
 BuildRequires: pkgconfig(appcore-efl)
 BuildRequires: pkgconfig(aul)
-BuildRequires: pkgconfig(capi-appfw-application)
-BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
 BuildRequires: pkgconfig(bundle)
+BuildRequires: pkgconfig(notification)
+BuildRequires: pkgconfig(capi-system-device)
+BuildRequires: pkgconfig(capi-appfw-application)
+BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(capi-message-port)
 BuildRequires: pkgconfig(capi-media-sound-manager)
-BuildRequires: pkgconfig(notification)
+BuildRequires: pkgconfig(capi-system-device)
 
 Requires: nodejs
 

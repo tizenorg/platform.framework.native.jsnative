@@ -21,6 +21,8 @@ BuildRequires: pkgconfig(aul)
 BuildRequires: pkgconfig(capi-appfw-application)
 BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
+BuildRequires: pkgconfig(jsoncpp)
+BuildRequires: pkgconfig(capi-system-device)
 
 
 Requires: nodejs

@@ -1,0 +1,11 @@
+{
+  "name": "tizen-notification",
+  "version": "0.0.1",
+  "description": "Module for Tizen Notification",
+  "main": "tizen-notification.xwalk",
+  "author": {
+    "name": "Joonghyun Cho",
+    "email": "jh5.cho@samsung.com"
+  }
+}
+

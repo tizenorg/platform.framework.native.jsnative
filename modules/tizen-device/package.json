@@ -1,0 +1,10 @@
+{
+  "name": "tizen-device",
+  "version": "0.0.1",
+  "description": "tizen device api",
+  "main": "tizen-device.xwalk",
+  "author": {
+    "name": "Wonyoung Choi",
+    "email": "wy80.choi@samsung.com"
+  }
+}

@@ -167,7 +167,7 @@
         // Checking whether the 'appId' exists
         var app = parser.getAppSync(appId);
         if (app) {
-          throw new JsnError(appId + " already exists");
+          throw new JsnError(appId + ' already exists');
         }
       })
 
@@ -195,7 +195,7 @@
                                       parser.get('package').pkg_id +
                                         '.' + appId);
             return Q.denodeify(fs.writeFile)(binPath, binContent,
-                                             { mode: 775 });
+                                             { mode: 0o775 });
           });
       })
 
@@ -222,7 +222,7 @@
                 path.join(path.join(parser.get('exec_path'), 'res', appId),
                           'index.js');
             return Q.denodeify(fs.writeFile)(indexPath, indexContent,
-                                            { mode: 775 });
+                                            { mode: 0o775 });
           });
       })
 

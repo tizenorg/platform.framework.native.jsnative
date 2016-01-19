@@ -1,0 +1,12 @@
+{
+  "name": "tizen-app-manager",
+  "version": "0.0.1",
+  "description": "Module for ApplicationManager",
+  "main": "tizen-app-manager.xwalk",
+  "dependencies": {
+  },
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  }
+}

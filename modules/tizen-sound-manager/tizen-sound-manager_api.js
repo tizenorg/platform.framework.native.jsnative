@@ -20,14 +20,16 @@
 var async_message_id = 0;
 var async_map = new Map();
 
+var EE = require('events');
+
 function native_async_call(method, parameter, callback) {
-  var msg = {};
-  msg["cmd"] = method;
-  msg["args"] = Object.assign({}, parameter);
+  var args = {};
+  args['cmd'] = method;
+  args = Object.assign(args, parameter);  // https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
   var asyncid = async_message_id++;
-  msg["asyncid"] = "asyncid_" + asyncid;
-  async_map.set(msg["asyncid"], callback);
-  extension.internal.postMessage(JSON.stringify(msg));
+  args['asyncid'] = 'asynid_' + asyncid; 
+  async_map.set(args['asyncid'], callback);  // set the map with (key: id, value: cb) in js layer
+  extension.postMessage(JSON.stringify(args));  // send JSON object to native layer
 }
 
 function native_sync_call(method, parameter) {
@@ -57,12 +59,11 @@ function registerEventHandler(app) {
       } else {
         self.__event_handle__(msg);
       } // end if
-    } // end function
+    }; // end function
   })(app);
   extension.setMessageListener(handler);
 } // end registerEventHandler()
 
-var EE = require('events');
 /**
  * @class SoundManager
 *  @extends Node.EventEmmitter
@@ -71,7 +72,7 @@ class SoundManager extends EE{
   constructor() {
     super();
 
-    registEventHandler(this);
+    registerEventHandler(this);
   }
 
   __event_handle__(msg) {
@@ -96,7 +97,64 @@ class SoundManager extends EE{
     }
   }
 
+  get volume() {
+    console.log("get volume");
+    if (!this.volume_) {
+      this.volume_ = new Volume();
+    }
+    return this.volume_;
+  } // get volume()
+
 
 };
 
+class Volume extends EE{
+  constructor() {
+    super();
+    registerEventHandler(this);
+  }
+
+  get currentSoundType() {
+    console.log("get currentSoundType");
+    var ret = native_sync_call('getcurrentSoundType');
+    return ret;
+  }
+
+  set currentSoundType(type) {
+    console.log("set currentSoundType");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('setcurrentSoundType',args);
+  }
+
+  getMaxVolume(type) {
+    console.log("enter getMaxVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getMaxVolume',args);
+    return ret;
+  }
+
+  getVolume(type) {
+    console.log("enter getVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getVolume',args);
+    return ret;
+  }
+
+  setVolume(type, volume) {
+    console.log("enter setVolume");
+    var args = {'soundtype':type, 'volume':volume};
+    var ret = native_sync_call('setVolume',args);
+  }
+
+  __event_handle__(ev) {
+  console.log('__event_handle__ : ' + ['event']);
+    var change = false;
+    if (ev['event'] === 'volume.change') {
+        this.emit('change',ev['type'],ev['volume']);
+    }
+  }
+
+}
+
 exports = new SoundManager();
+//exports.volume = new Volume();

@@ -11,16 +11,23 @@ class SoundManagerExtension : public xwalk::XWalkExtension {
   xwalk::XWalkExtensionInstance* CreateInstance();
 };
 
-class SoundMangerInstance : public xwalk::XWalkExtensionInstance {
+class SoundManagerInstance : public xwalk::XWalkExtensionInstance {
  public:
+
+  // @override
+  void Initialize();
+
   // @override
   void HandleMessage(const char* msg);
 
   // @override
   void HandleSyncMessage(const char* msg);
 
+  void HandleVolumeChange(const std::string& event, const std::string& data);
+
 private:
 
+  void InitializeCallbacks();
 };
 
 }  // namespace sound

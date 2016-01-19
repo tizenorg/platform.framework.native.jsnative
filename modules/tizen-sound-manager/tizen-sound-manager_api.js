@@ -21,13 +21,13 @@ var async_message_id = 0;
 var async_map = new Map();
 
 function native_async_call(method, parameter, callback) {
-  var msg = {};
-  msg["cmd"] = method;
-  msg["args"] = Object.assign({}, parameter);
+  var args = {};
+  args["cmd"] = method;
+  args = Object.assign(args, parameter);
   var asyncid = async_message_id++;
-  msg["asyncid"] = "asyncid_" + asyncid;
-  async_map.set(msg["asyncid"], callback);
-  extension.internal.postMessage(JSON.stringify(msg));
+  args["asyncid"] = "asyncid_" + asyncid;
+  async_map.set(args["asyncid"], callback);
+  extension.internal.postMessage(JSON.stringify(args));
 }
 
 function native_sync_call(method, parameter) {
@@ -35,9 +35,9 @@ function native_sync_call(method, parameter) {
   args["cmd"] = method;
   args = Object.assign(args, parameter);
   try {
-    return extension.internal.sendSyncMessage(JSON.stringify(args));
+    return JSON.parse(extension.internal.sendSyncMessage(JSON.stringify(args)));
   } catch (e) {
-    console.log(e.message);
+    console.log('recevied message parse error:' + e.message);
     return {};
   }
 }
@@ -53,16 +53,76 @@ function registerEventHandler(app) {
           callback(msg);
         } else {
           console.log("callback in not function");
-        } // end if
+        }
       } else {
         self.__event_handle__(msg);
-      } // end if
-    } // end function
+      }
+    };
   })(app);
   extension.setMessageListener(handler);
-} // end registerEventHandler()
+}
+
+/**
+ * @class Device
+ */
+class Device {
+   constructor(id , name, type, direction, state){
+    console.log('Device constructor ');
+    this[internalId_] = id;
+    this[name_] = name;
+    this[type_] = type;
+    this[direction_] = direction;
+    this[state_] = state;
+  }
+
+  /**
+   * @attribute id
+   * @type {int}
+   * @readonly
+   */
+  get id() {
+    return this[internalId_];
+  }
+
+  /**
+   * @attribute name
+   * @type {string}
+   * @readonly
+   */
+  get name() {
+    return this[name_];
+  }
+
+  /**
+   * @attribute ioDirection
+   * @type {string}
+   * @readonly
+   */
+  get ioDirection() {
+    return this[direction_];
+  }
+
+  /**
+   * @attribute state
+   * @type {string}
+   * @readonly
+   */
+  get state() {
+    return this[state_];
+  }
+
+  /**
+   * @attribute type
+   * @type {string}
+   * @readonly
+   */
+  get type() {
+    return this[type];
+  }
+};
 
 var EE = require('events');
+
 /**
  * @class SoundManager
 *  @extends Node.EventEmmitter
@@ -70,33 +130,142 @@ var EE = require('events');
 class SoundManager extends EE{
   constructor() {
     super();
-
-    registEventHandler(this);
+    this.connectionFilter_ = {};
+    this.deviceInfoFilter_ = {};
+    registerEventHandler(this);
   }
 
   __event_handle__(msg) {
-    if (msg['event'] == 'connect') {
-      var connectedEvent;
-      //todo
-      this.emit('connect', connectedEvent);
-    } else if (msg['event'] == 'changedDeviceInfo') {
-      var deviceInfo;
-     //todo
-      this.emit('changedDeviceInfo', deviceInfo);
-    } else if (msg['event'] == 'interrupt') {
-      var interruptEvent;
-      //todo
-      this.emit('interrupt', interruptEvent);
-    } else if (msg['event'] == 'volume') {
-      var volumeLevel;
-      //todo
-      this.emit('volume', volumeLevel);
+    console.log('__event_handle__');
+
+    if (msg['event'] == 'connectionState') {
+      var connectionState = msg['data'];
+      this.emit('connectionState', connectionState);
+    } else if (msg['event'] == 'deviceInfo') {
+      var deviceInfo= msg['data'];
+      this.emit('deviceInfo', deviceInfo);
     } else {
       console.log('invalid event was passed');
     }
   }
 
+   get connectionFilter(){
+     console.log(' get connectionFilter');
+     return this.connectionFilter_;
+  }
+
+   set connectionFilter(filter){
+     console.log(' set connectionFilter');
+     this.connectionFilter_ = filter;
+     native_sync_call('setConnectionFilter', filter);
+  }
+
+   get deviceInfoFilter(){
+     console.log(' get deviceInfoFilter');
+     return this.deviceInfoFilter_;
+  }
+
+   set deviceInfoFilter(filter){
+        console.log(' set deviceInfoFilter');
+        this.deviceInfoFilter_ = filter;
+        native_sync_call('setDeviceInfoFilter', filter);
+  }
+
+/**
+ * @method getCurrentDeviceList
+ * @param {Object} [filter] A filter to filter the return results.
+ * This optional object has three properties which each have a default value
+ * which are used if this parameter is not specified:
+ * - 'direction' - One of 'in', 'out' or 'both' for input, output or for
+ * both input and output devices respectively. 'both' is default.
+ * - 'type' - Can be 'internal', 'external' or 'all' for built-in, external
+ * or both built-in and external devices respectively. 'all' is default.
+ * - 'state' - Can be 'activated', 'deactivated' or 'all' for activated,
+ * deactivated or both activated and deactivated devices respectively. 'all'
+ * is default.
+ * @return {Promise<Device[]>} A list of current device
+ * var soundManager = require('tizen-sound-manager');
+ *
+ * var filter = {'direction': 'in',
+ *               'type': 'internal',
+ *               'state': 'activated'};
+ * var list = soundManager.getCurrentDeviceList(filter);
+ */
+  getCurrentDeviceList(filter){
+    console.log('getCurrentDeviceList');
+    return new Promise(function(resolve, reject) {
+        native_async_call('getCurrentDeviceList', filter , function(result) {
+            if(result['result'] == 'OK') {
+                var devices = result['data'].map(function(deviceData) {
+                      console.log('deviceData id:' + deviceData.id + ', name:' + deviceData.name + ', type:' + deviceData.type);
+                      console.log('direction:'+ deviceData.direction + ', state:'+deviceData.state);
+                      return new Device(deviceData.id, deviceData.name, deviceData.type, deviceData.direction, deviceData.state);
+                });
+                resolve(devices);
+            } else {
+                reject(new Error(result['reason']));
+            }
+          });
+     }
+
+  }
+
+  get volume() {
+    console.log("get volume");
+    if (!this.volume_) {
+      this.volume_ = new Volume();
+    }
+    return this.volume_;
+  } // get volume()
 
 };
+
+class Volume extends EE{
+  constructor() {
+    super();
+    registerEventHandler(this);
+  }
+
+  get currentSoundType() {
+    console.log("get currentSoundType");
+    var ret = native_sync_call('getcurrentSoundType');
+    return ret;
+  }
+
+  set currentSoundType(type) {
+    console.log("set currentSoundType");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('setcurrentSoundType',args);
+  }
+
+  getMaxVolume(type) {
+    console.log("enter getMaxVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getMaxVolume',args);
+    return ret;
+  }
+
+  getVolume(type) {
+    console.log("enter getVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getVolume',args);
+    return ret;
+  }
+
+  setVolume(type, volume) {
+    console.log("enter setVolume");
+    var args = {'soundtype':type, 'volume':volume};
+    var ret = native_sync_call('setVolume',args);
+  }
+
+  __event_handle__(ev) {
+  console.log('__event_handle__ : ' + ['event']);
+    var change = false;
+    if (ev['event'] === 'volume.change') {
+        this.emit('change',ev['type'],ev['volume']);
+    }
+  }
+
+}
 
 exports = new SoundManager();

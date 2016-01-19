@@ -30,6 +30,7 @@ BuildRequires: pkgconfig(capi-media-sound-manager)
 BuildRequires: pkgconfig(capi-system-device)
 BuildRequires: pkgconfig(capi-system-system-settings)
 BuildRequires: pkgconfig(capi-system-info)
+BuildRequires: pkgconfig(storage)
 
 Requires: nodejs
 

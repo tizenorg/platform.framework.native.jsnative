@@ -15,6 +15,7 @@
  */
 
  #include "sound_manager_extension.h"
+ #include "sound_manager_util.h"
 
  #include <dlog.h>
  #include <sound_manager.h>
@@ -29,13 +30,42 @@
 namespace sound {
 
 xwalk::XWalkExtensionInstance* SoundManagerExtension::CreateInstance() {
-  return new SoundMangerInstance();
+  return new SoundManagerInstance();
+}
+
+void VolumeChangedCallback(sound_type_e type, unsigned int volume, void* data) {
+  LOGD("enter");
+  LOGD("changed cb volume : %d", volume);
+  SoundManagerInstance* self = reinterpret_cast<SoundManagerInstance*>(data);
+  if (self == nullptr) {
+    LOGE("Pointer of SoundManagerInstance has nullptr");
+    return;
+  }
+  std::string type_str = SoundManagerUtil::SoundTypeToString(type);
+  picojson::value::object obj;
+  obj["event"] = picojson::value("volume.change");
+  obj["type"] = picojson::value(type_str);
+  obj["volume"] = picojson::value(std::to_string(volume));
+  obj["result"] = picojson::value("OK");
+  self->PostMessage(picojson::value(obj).serialize().c_str());
+}
+
+void SoundManagerInstance::Initialize() {
+  LOGD("enter");
+  InitializeCallbacks();
+}
+
+void SoundManagerInstance::InitializeCallbacks() {
+  LOGD("enter");
+  if (sound_manager_set_volume_changed_cb(VolumeChangedCallback, this) < 0) {
+    LOGE("Failed to add callback for volume change");
+  }
 }
 
 /**
  * Handles async message
  */
-void SoundMangerInstance::HandleMessage(const char* msg) {
+void SoundManagerInstance::HandleMessage(const char* msg) {
   LOGD("enter");
 
   picojson::value value;
@@ -68,7 +98,7 @@ void SoundMangerInstance::HandleMessage(const char* msg) {
 /**
  * Handles sync message
  */
-void SoundMangerInstance::HandleSyncMessage(const char* msg) {
+void SoundManagerInstance::HandleSyncMessage(const char* msg) {
   LOGD("enter");
 
   picojson::value value;
@@ -84,12 +114,48 @@ void SoundMangerInstance::HandleSyncMessage(const char* msg) {
     return;
   }
 
-  std::string cmd = value.get("cmd").to_str();
+  auto& request = value.get<picojson::object>();
+  auto cmd = request["cmd"].to_str();
+
   if (cmd == "") {
     /* Handles the specific cmd */
-  } else {
+  } else if (cmd == "getcurrentSoundType") {
+    LOGD("enter");
+    sound_type_e type;
+    sound_manager_get_current_sound_type(&type);
+    std::string type_str = SoundManagerUtil::SoundTypeToString(type);
+    SendSyncReply(type_str.c_str());
+  } else if (cmd == "setcurrentSoundType") {
+    LOGD("enter");
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_set_current_sound_type(type);
+  } else if (cmd == "getMaxVolume") {
+    LOGD("enter");
+    int max_volume;
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_get_max_volume(type, &max_volume);
+    SendSyncReply(std::to_string(max_volume).c_str());
+  } else if (cmd == "getVolume") {
+    LOGD("enter");
+    int volume;
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_get_volume(type, &volume);
+    SendSyncReply(std::to_string(volume).c_str());
+  } else if (cmd == "setVolume") {
+    LOGD("enter");
+    int volume = std::stoi(request["volume"].to_str());
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_set_volume(type, volume);
+  }
+  else {
     LOGW("the cmd is wrong cmd");
   }
 }
 
 }  // namespace sound
+
+EXPORT_XWALK_EXTENSION(tizen_sound_manager, sound::SoundManagerExtension);

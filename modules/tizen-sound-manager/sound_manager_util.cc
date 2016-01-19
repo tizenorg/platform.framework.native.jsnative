@@ -19,15 +19,15 @@
 
 namespace sound {
 
-SoundMangerUtil::SoundMangerUtil() {
+SoundManagerUtil::SoundManagerUtil() {
 
 }
 
-SoundMangerUtil::~SoundMangerUtil() {
+SoundManagerUtil::~SoundManagerUtil() {
 
 }
 
-const char* SoundMangerUtil::SessionTypeToString(sound_session_type_e type) {
+const char* SoundManagerUtil::SessionTypeToString(sound_session_type_e type) {
   LOGD("enter");
 
   if (type == SOUND_SESSION_TYPE_MEDIA) {
@@ -46,7 +46,7 @@ const char* SoundMangerUtil::SessionTypeToString(sound_session_type_e type) {
   }
 }
 
-const char* SoundMangerUtil::SessionStartOptionToString(sound_session_option_for_starting_e option) {
+const char* SoundManagerUtil::SessionStartOptionToString(sound_session_option_for_starting_e option) {
   LOGD("enter");
 
   if (option == SOUND_SESSION_OPTION_MIX_WITH_OTHERS_WHEN_START) {
@@ -59,7 +59,7 @@ const char* SoundMangerUtil::SessionStartOptionToString(sound_session_option_for
   }
 }
 
-const char* SoundMangerUtil::SessionPlayingOptionToString(sound_session_option_for_during_play_e option) {
+const char* SoundManagerUtil::SessionPlayingOptionToString(sound_session_option_for_during_play_e option) {
   LOGD("enter");
 
   if (option == SOUND_SESSION_OPTION_INTERRUPTIBLE_DURING_PLAY) {
@@ -72,7 +72,7 @@ const char* SoundMangerUtil::SessionPlayingOptionToString(sound_session_option_f
   }
 }
 
-const char* SoundMangerUtil::SessionResumptionOptionToString(sound_session_option_for_resumption_e option) {
+const char* SoundManagerUtil::SessionResumptionOptionToString(sound_session_option_for_resumption_e option) {
   LOGD("enter");
 
   if (option == SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM) {
@@ -82,6 +82,54 @@ const char* SoundMangerUtil::SessionResumptionOptionToString(sound_session_optio
   } else {
     LOGE("invalid sound_session_option_for_resumption_e was passed");
     // TODO: throw TypeErrorException
+  }
+}
+
+const char* SoundManagerUtil::SoundTypeToString(sound_type_e type) {
+  LOGD("enter");
+
+  if ( type == SOUND_TYPE_SYSTEM) {
+      return "system";
+  } else if ( type == SOUND_TYPE_NOTIFICATION) {
+      return "notification";
+  } else if ( type == SOUND_TYPE_ALARM) {
+      return "alarm";
+  } else if ( type == SOUND_TYPE_RINGTONE) {
+      return "ringtone";
+  } else if ( type == SOUND_TYPE_MEDIA) {
+      return "media";
+  } else if ( type == SOUND_TYPE_CALL) {
+      return "call";
+  } else if ( type == SOUND_TYPE_VOIP) {
+      return "voip";
+  } else if ( type == SOUND_TYPE_VOICE) {
+      return "voice";
+  } else {
+      LOGE("invalid sound_type_e was passed");
+  }
+}
+
+sound_type_e SoundManagerUtil::StringToSoundType(const std::string& type_str) {
+  LOGD("enter");
+
+  if ( type_str == "system") {
+      return SOUND_TYPE_SYSTEM;
+  } else if ( type_str == "notification") {
+      return SOUND_TYPE_NOTIFICATION;
+  } else if ( type_str == "alarm") {
+      return SOUND_TYPE_ALARM;
+  } else if ( type_str == "ringtone") {
+      return SOUND_TYPE_RINGTONE;
+  } else if ( type_str == "media") {
+      return SOUND_TYPE_MEDIA;
+  } else if ( type_str == "call") {
+      return SOUND_TYPE_CALL;
+  } else if ( type_str == "voip") {
+      return SOUND_TYPE_VOIP;
+  } else if ( type_str == "voice") {
+      return SOUND_TYPE_VOICE;
+  } else {
+      LOGE("invalid sound_type_e was passed");
   }
 }
 

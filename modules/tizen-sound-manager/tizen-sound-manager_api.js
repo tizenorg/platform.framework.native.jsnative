@@ -226,6 +226,62 @@ class SoundManager extends EE{
      });
   }
 
+  get volume() {
+    console.log("get volume");
+    if (!this.volume_) {
+      this.volume_ = new Volume();
+    }
+    return this.volume_;
+  } // get volume()
+
 };
+
+class Volume extends EE{
+  constructor() {
+    super();
+    registerEventHandler(this);
+  }
+
+  get currentSoundType() {
+    console.log("get currentSoundType");
+    var ret = native_sync_call('getcurrentSoundType');
+    return ret;
+  }
+
+  set currentSoundType(type) {
+    console.log("set currentSoundType");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('setcurrentSoundType',args);
+  }
+
+  getMaxVolume(type) {
+    console.log("enter getMaxVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getMaxVolume',args);
+    return ret;
+  }
+
+  getVolume(type) {
+    console.log("enter getVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getVolume',args);
+    return ret;
+  }
+
+  setVolume(type, volume) {
+    console.log("enter setVolume");
+    var args = {'soundtype':type, 'volume':volume};
+    var ret = native_sync_call('setVolume',args);
+  }
+
+  __event_handle__(ev) {
+  console.log('__event_handle__ : ' + ['event']);
+    var change = false;
+    if (ev['event'] === 'volume.change') {
+        this.emit('change',ev['type'],ev['volume']);
+    }
+  }
+
+}
 
 exports = new SoundManager();

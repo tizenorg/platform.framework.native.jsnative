@@ -35,6 +35,8 @@ public:
   static const char* SessionStartOptionToString(sound_session_option_for_starting_e type);
   static const char* SessionPlayingOptionToString(sound_session_option_for_during_play_e type);
   static const char* SessionResumptionOptionToString(sound_session_option_for_resumption_e type);
+  static const char* SoundTypeToString(sound_type_e type);
+  static sound_type_e StringToSoundType(const std::string& type_str);
 private:
   static const std::map<std::string, sound_device_mask_e> sound_device_mask_map_;
 };

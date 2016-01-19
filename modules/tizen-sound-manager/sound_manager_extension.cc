@@ -69,6 +69,23 @@ void ConnectionChangedCallback(sound_device_h device,
   self -> PostMessage(response.serialize().c_str());
 }
 
+void VolumeChangedCallback(sound_type_e type, unsigned int volume, void* data) {
+  LOGD("enter");
+  LOGD("changed cb volume : %d", volume);
+  SoundManagerInstance* self = reinterpret_cast<SoundManagerInstance*>(data);
+  if (self == nullptr) {
+    LOGE("Pointer of SoundManagerInstance has nullptr");
+    return;
+  }
+  std::string type_str = SoundManagerUtil::SoundTypeToString(type);
+  picojson::value::object obj;
+  obj["event"] = picojson::value("volume.change");
+  obj["type"] = picojson::value(type_str);
+  obj["volume"] = picojson::value(std::to_string(volume));
+  obj["result"] = picojson::value("OK");
+  self->PostMessage(picojson::value(obj).serialize().c_str());
+}
+
 void DeviceInfoChangedCallback(sound_device_h device,
                                sound_device_changed_info_e  info,
                                void *user_data ){
@@ -107,6 +124,9 @@ void SoundManagerInstance::Initialize() {
 
   //initialize callback
 void SoundManagerInstance::InitializeCallbacks() {
+  if (sound_manager_set_volume_changed_cb(VolumeChangedCallback, this) < 0) {
+    LOGE("Failed to add callback for volume change");
+  }
  /*
   sound_device_mask_e mask = SOUND_DEVICE_ALL_MASK;
   int ret =sound_manager_set_device_connected_cb(mask,
@@ -196,9 +216,42 @@ void SoundManagerInstance::HandleSyncMessage(const char* msg) {
         LOGE("Failed to add callback for connection");
       }
       */
-  } else {
-    LOGD("the cmd is wrong cmd");
+  } else if (cmd == "getcurrentSoundType") {
+    LOGD("enter");
+    sound_type_e type;
+    sound_manager_get_current_sound_type(&type);
+    std::string type_str = SoundManagerUtil::SoundTypeToString(type);
+    SendSyncReply(type_str.c_str());
+  } else if (cmd == "setcurrentSoundType") {
+    LOGD("enter");
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_set_current_sound_type(type);
+  } else if (cmd == "getMaxVolume") {
+    LOGD("enter");
+    int max_volume;
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_get_max_volume(type, &max_volume);
+    SendSyncReply(std::to_string(max_volume).c_str());
+  } else if (cmd == "getVolume") {
+    LOGD("enter");
+    int volume;
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_get_volume(type, &volume);
+    SendSyncReply(std::to_string(volume).c_str());
+  } else if (cmd == "setVolume") {
+    LOGD("enter");
+    int volume = std::stoi(request["volume"].to_str());
+    auto type_str = request["soundtype"].to_str();
+    sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
+    sound_manager_set_volume(type, volume);
   }
+  else {
+    LOGW("the cmd is wrong cmd");
+  }
+
 }
 
 void SoundManagerInstance::GetDeviceList(const std::string& asyncid,

@@ -1,0 +1,10 @@
+{
+  "name": "tizen-storage",
+  "version": "0.0.1",
+  "description": "Storage Module",
+  "main": "tizen-storage.xwalk",
+  "author": {
+    "name": ".",
+    "email": "."
+  }
+}

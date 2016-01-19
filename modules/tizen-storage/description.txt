@@ -1,0 +1,23 @@
+
+c  StorageManager()
+m    getStorages()
+       It return array object of the Storage()
+e    changed
+       TODO
+
+c  Storage()
+m    getDirectory(type)
+       It returns the directory path that match the type in the storage.
+a    id
+       RO
+a    type
+       RO
+a    state
+       RO
+a    path
+       RO
+a    totalSpace
+       RO
+a    availableSpace
+       RO
+

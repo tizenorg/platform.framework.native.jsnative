@@ -1,0 +1,104 @@
+
+http://10.113.138.40/native-js/Yuidoc/modules/tizen-storage.html
+http://10.113.138.40/2.4/native/mobile/group__CAPI__SYSTEM__STORAGE__MODULE.html
+
+=== ASIS
+
+  /**
+  * @method
+  * @param
+  * @return
+  * @privilege
+  * @throw
+  * @since 3.0
+  **/
+
+1. Storage
+  method
+    getStorages     //storage_id, type, state, path(absolute)
+    getMemorySize
+    getStorage
+
+2. Storage.Info
+  method
+    getStorageSpace         //space size
+    getAvailableSpace       //available space size
+    getStandardDirectory    //default file path
+  attribute
+    id                      //storage_id
+    type                    //internal/etxernal
+    rootPath                //filesystem
+    absolutePath            //filesystem
+  event
+    state
+
+3. Storage.MemorySizeInfo
+  attribute
+    bsize   //block size
+    frsize  //fragment size
+    blocks  //fragment size unit
+    bfree   //free blocks
+    bavail  //free blocks for unprivileged users
+    files   //inode
+    ffree   //free inodes
+    favail  //free inodes for unprivileged usres
+    fsid    //filesystem id
+    flag    //mount flag
+    namemax //max length of file name
+
+4. usage
+var storage = require('tizen-storage');
+storage.getStorages()
+  .then(function (storages) {
+    return storages[0].getAvailableSpace();
+  })
+  .then(function (space) {
+    console.log("We have " + (space / 1024) + "kb free space");
+  })
+  .catch(function (error) {
+    console.error("** " + error.message);
+  });
+
+var storage = require('tizen-storage');
+storage.getStorage(0)
+  .then(function () {
+    storage0.on('state', function (state) {
+      console.log("Storage state has changed to " + state);
+    });
+  });
+
+5. native api
+int storage_foreach_device_supported (storage_device_supported_cb callback, void *user_data)
+int storage_get_root_directory (int storage_id, char **path)
+int storage_get_directory (int storage_id, storage_directory_e type, char **path)
+int storage_get_type (int storage_id, storage_type_e *type)
+int storage_get_state (int storage_id, storage_state_e *state)
+int storage_set_state_changed_cb (int storage_id, storage_state_changed_cb callback, void *user_data)
+int storage_unset_state_changed_cb (int storage_id, storage_state_changed_cb callback)
+int storage_get_total_space (int storage_id, unsigned long long *bytes)
+int storage_get_available_space (int storage_id, unsigned long long *bytes)
+int storage_get_internal_memory_size (struct statvfs *buf)
+int storage_get_external_memory_size (struct statvfs *buf)
+
+
+== TOBE
+
+1. storage manager ???
+
+2. usage
+storage.getStorages()
+  .then(function (storages) {
+    for(var index in storages) {
+      console.log('@@@ index: '+index);
+      console.log('@@@ storage_id: '+storages[index].storage_id);
+      console.log('@@@ type: '+storages[index].type);
+      console.log('@@@ state: '+storages[index].state);
+      console.log('@@@ path: '+storages[index].path);
+      console.log('@@@ size: '+storages[index].size);
+      console.log('@@@ space: '+storages[index].space);
+    }
+  })
+  .catch(function (error) {
+    console.error("** " + error.message);
+  });
+

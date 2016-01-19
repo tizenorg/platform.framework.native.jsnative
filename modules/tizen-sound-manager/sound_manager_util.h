@@ -18,18 +18,21 @@
 #define SOUNDMANAGER_UTIL_H_
 
 #include <sound_manager.h>
+#include "picojson.h"
 
 namespace sound {
 
-class SoundMangerUtil {
+class SoundManagerUtil {
 public:
-  SoundMangerUtil();
-  ~SoundMangerUtil();
+  SoundManagerUtil();
+  ~SoundManagerUtil();
 
   static const char* SessionTypeToString(sound_session_type_e type);
   static const char* SessionStartOptionToString(sound_session_option_for_starting_e type);
   static const char* SessionPlayingOptionToString(sound_session_option_for_during_play_e type);
   static const char* SessionResumptionOptionToString(sound_session_option_for_resumption_e type);
+  static const char* SoundTypeToString(sound_type_e type);
+  static sound_type_e StringToSoundType(const std::string& type_str);
 private:
 };
 

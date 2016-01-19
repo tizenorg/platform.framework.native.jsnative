@@ -99,4 +99,48 @@ class SoundManager extends EE{
 
 };
 
+class Volume{
+  constructor() {
+  }
+
+  get currentSoundType() {
+    console.log("get currentSoundType");
+    var ret = native_sync_call('getcurrentSoundType');
+    return ret;
+  }
+
+  set currentSoundType(type) {
+    console.log("set currentSoundType");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('setcurrentSoundType',args);
+  }
+
+  getMaxVolume(type) {
+    console.log("enter getMaxVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getMaxVolume',args);
+    return ret;
+  }
+
+  getVolume(type) {
+    console.log("enter getVolume");
+    var args = {'soundtype':type};
+    var ret = native_sync_call('getVolume',args);
+    return ret;
+  }
+
+  setVolume(type, volume) {
+    console.log("enter setVolume");
+    var args = {'soundtype':type, 'volume':volume};
+    var ret = native_sync_call('setVolume',args);
+  }
+
+  syncEcho(msg) {
+    console.log("syncEcho msg : " + msg);
+    var args = {'msg':msg};
+    var ret = native_sync_call('syncEcho', args);
+    return ret;
+  }
+}
+
 exports = new SoundManager();

@@ -195,7 +195,7 @@
                                       parser.get('package').pkg_id +
                                         '.' + appId);
             return Q.denodeify(fs.writeFile)(binPath, binContent,
-                                             { mode: 0o775 });
+                                             { mode: '0775' });
           });
       })
 
@@ -222,7 +222,7 @@
                 path.join(path.join(parser.get('exec_path'), 'res', appId),
                           'index.js');
             return Q.denodeify(fs.writeFile)(indexPath, indexContent,
-                                            { mode: 0o775 });
+                                            { mode: '0775' });
           });
       })
 

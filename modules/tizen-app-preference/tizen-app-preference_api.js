@@ -5,7 +5,10 @@ function native_sync_call(method, parameter) {
   args['cmd'] = method;
   args = Object.assign(args, parameter);
   try {
-    return JSON.parse(extension.internal.sendSyncMessage(JSON.stringify(args)));
+  	console.log("[sync call] 1");
+  	var ret = extension.internal.sendSyncMessage(JSON.stringify(args));
+	console.log("[sync call] 2");
+    return JSON.parse(ret);
   } catch (e) {
     console.log('recevied message parse error:' + e.message);
     return {};
@@ -33,7 +36,9 @@ class AppPreference {
    * @return {string}
    */
   getItem(key) {
-    return native_sync_call('get', {'key': key})['data'];
+    var result = native_sync_call('get', {'key': key});
+	
+    return result['data'];
   }
 
   /**

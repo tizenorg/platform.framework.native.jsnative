@@ -1,13 +1,13 @@
-SET(MODULE "tizen-application-common")
+SET(MODULE "tizen-system-runtime-info")
 
 # Native Module
 ADD_MODULE(${MODULE} XWALK
   JSAPI
-    tizen-application-common_api.js
+    tizen-system-runtime-info_api.js
   SRCS
-    app_common_extension.cc
+    system_runtime_info_extension.cc
   DEPENDS
-    dlog capi-appfw-application bundle
+    dlog capi-system-runtime-info
 )
 
 # Copy Project

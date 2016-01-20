@@ -18,7 +18,10 @@
 
 #include <dlog.h>
 #include <app_control.h>
+#include <app_control_internal.h>
 #include <app_common.h>
+#include <bundle.h>
+#include <bundle_internal.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -119,10 +122,16 @@ void AppCommonInstance::HandleAppcontrolResponse(const picojson::value& value,
   }
   std::string appcontrol_json = value.get("appcontrol").to_str();
 
-  // TODO(sngn.lee): to be implemented
-  // create request from json
-  // appcontrol_h request;
-  // app_control_create_from_json(&request, json.c_str());
+  app_control_h request = nullptr;
+
+  app_control_create(&request);
+
+  if (appcontrol_json.length() > 0) {
+    bundle* b = nullptr;
+    bundle_from_json(appcontrol_json.c_str(), &b);
+    app_control_import_from_bundle(request, b);
+    bundle_free(b);
+  }
 
   auto extra_data = value.get("data").get<picojson::object>();
   app_control_h response;
@@ -149,11 +158,18 @@ void AppCommonInstance::HandleAppcontrolResponse(const picojson::value& value,
     }
   }
 
-  // TODO(sngn.lee): to be implemented
-  // app_control_reply_to_launch_request(response, request, 0);
-  // app_control_destroy(request);
+  int ret = app_control_reply_to_launch_request(response,
+                                                request,
+                                                APP_CONTROL_RESULT_SUCCEEDED);
+  app_control_destroy(request);
   app_control_destroy(response);
-  result->insert(std::make_pair("result", picojson::value("OK")));
+  if (ret == APP_CONTROL_ERROR_NONE) {
+    result->insert(std::make_pair("result", picojson::value("OK")));
+  } else {
+    result->insert(std::make_pair("result", picojson::value("Fail")));
+    result->insert(
+        std::make_pair("reason", picojson::value("Invalid Appcontrol")));
+  }
 }
 
 }  // namespace appfw

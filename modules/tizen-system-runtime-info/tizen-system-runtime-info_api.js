@@ -5,9 +5,8 @@ function native_sync_call(method, parameter) {
   args['cmd'] = method;
   args = Object.assign(args, parameter);
   try {
-  	console.log("[sync call] 1");
   	var ret = extension.internal.sendSyncMessage(JSON.stringify(args));
-	console.log("[sync call] 2");
+	console.log("[native_sync_call] after");
     return JSON.parse(ret);
   } catch (e) {
     console.log('recevied message parse error:' + e.message);
@@ -15,11 +14,13 @@ function native_sync_call(method, parameter) {
   }
 }
 
+
 /**
- * @class AppPreference
+ * @class SystemRuntimeInfo
  */
-class AppPreference {
+class SystemRuntimeInfo {
   constructor() {
+  	console.log("[Runtime-Info] Constructor");
   }
 
   /**
@@ -35,10 +36,21 @@ class AppPreference {
    * @param {string} key
    * @return {string}
    */
-  getItem(key) {
+  getValue(key) {
+    console.log("getValue 1");
     var result = native_sync_call('get', {'key': key});
-	
+    console.log("getValue 2");
     return result['data'];
+  }
+
+
+  /**
+   * @method getItem
+   * @param {string} key
+   * @return {string}
+   */
+  getItem(key) {
+    return native_sync_call('get', {'key': key})['data'];
   }
 
   /**
@@ -102,4 +114,4 @@ class AppPreference {
 
 };
 
-exports = new AppPreference();
+exports = new SystemRuntimeInfo();

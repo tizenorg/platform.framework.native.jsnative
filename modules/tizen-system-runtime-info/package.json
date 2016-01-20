@@ -1,0 +1,10 @@
+{
+  "name": "tizen-system-runtime-info",
+  "version": "0.0.1",
+  "description": "Module for system runtime info",
+  "main": "tizen-system-runtime-info.xwalk",
+  "author": {
+    "name": "Rina You",
+    "email": "rina6350.you@samsung.com"
+  }
+}

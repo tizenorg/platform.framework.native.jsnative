@@ -32,6 +32,7 @@ BuildRequires: pkgconfig(capi-system-device)
 BuildRequires: pkgconfig(capi-system-system-settings)
 BuildRequires: pkgconfig(storage)
 BuildRequires: pkgconfig(capi-system-info)
+BuildRequires: pkgconfig(capi-system-runtime-info)
 
 Requires: nodejs
 

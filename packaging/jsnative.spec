@@ -22,7 +22,7 @@ BuildRequires: pkgconfig(capi-appfw-application)
 BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(pkgmgr-info)
 BuildRequires: pkgconfig(bundle)
-
+BuildRequires: pkgconfig(launchpad)
 
 Requires: nodejs
 
@@ -61,3 +61,4 @@ rm -rf %{buildroot}
 %manifest %{name}.manifest
 %{_datadir}/license/%{name}
 %{_prefix}/lib/node/*
+%attr(755,root,root) %{_bindir}/jsnative-loader

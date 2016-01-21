@@ -29,6 +29,8 @@ BuildRequires: pkgconfig(capi-message-port)
 BuildRequires: pkgconfig(capi-media-sound-manager)
 BuildRequires: pkgconfig(capi-system-device)
 BuildRequires: pkgconfig(capi-system-system-settings)
+BuildRequires: pkgconfig(launchpad)
+BuildRequires: pkgconfig(elementary)
 
 Requires: nodejs
 
@@ -67,3 +69,4 @@ rm -rf %{buildroot}
 %manifest %{name}.manifest
 %{_datadir}/license/%{name}
 %{_prefix}/lib/node/*
+%attr(755,root,root) %{_bindir}/jsnative-loader

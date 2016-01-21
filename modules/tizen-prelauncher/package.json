@@ -1,0 +1,13 @@
+{
+  "name": "tizen-prelauncher",
+  "version": "0.1.0",
+  "description": "prelauncer for tizen launchpad",
+  "main": "tizen-prelauncher.js",
+  "author": {
+    "name": "Seungkeun Lee",
+    "email": "sngn.lee@samsung.com"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  }
+}

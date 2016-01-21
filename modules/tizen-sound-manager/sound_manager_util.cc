@@ -38,7 +38,7 @@ SoundManagerUtil::~SoundManagerUtil() {
 
 }
 
-const char* SoundManagerUtil::SessionTypeToString(sound_session_type_e type) {
+const char* SoundManagerUtil::soundSessionTypeToString(sound_session_type_e type) {
   LOGD("enter");
 
   if (type == SOUND_SESSION_TYPE_MEDIA) {
@@ -56,7 +56,6 @@ const char* SoundManagerUtil::SessionTypeToString(sound_session_type_e type) {
     // TODO: throw TypeErrorException
   }
 }
-
 
 std::string SoundManagerUtil::SoundDeviceTypeToString(sound_device_type_e type) {
   LOGD("Enter");
@@ -121,7 +120,7 @@ sound_device_mask_e SoundManagerUtil::FilterStringToEnum(const std::string& key)
   return sound_device_mask_map_.at(key);
 }
 
-const char* SoundManagerUtil::SessionStartOptionToString(sound_session_option_for_starting_e option) {
+const char* SoundManagerUtil::soundSessionStartOptionToString(sound_session_option_for_starting_e option) {
   LOGD("enter");
 
   if (option == SOUND_SESSION_OPTION_MIX_WITH_OTHERS_WHEN_START) {
@@ -130,32 +129,153 @@ const char* SoundManagerUtil::SessionStartOptionToString(sound_session_option_fo
     return "pause-others";
   } else {
     LOGE("invalid sound_session_option_for_starting_e was passed");
-    // TODO: throw Exception
+    // TODO: throw TypeErrorException
   }
 }
 
-const char* SoundManagerUtil::SessionPlayingOptionToString(sound_session_option_for_during_play_e option) {
+const char* SoundManagerUtil::soundSessionInterruptOptionToString(sound_session_option_for_during_play_e option) {
   LOGD("enter");
 
   if (option == SOUND_SESSION_OPTION_INTERRUPTIBLE_DURING_PLAY) {
-    return "interruptible-during-play";
+    return "interruptible";
   } else if (option == SOUND_SESSION_OPTION_UNINTERRUPTIBLE_DURING_PLAY) {
-    return "uninterruptible-during-play";
+    return "uninterruptible";
   } else {
     LOGE("invalid sound_session_option_for_during_play_e was passed");
     // TODO: throw TypeErrorException
   }
 }
 
-const char* SoundManagerUtil::SessionResumptionOptionToString(sound_session_option_for_resumption_e option) {
+const char* SoundManagerUtil::soundSessionResumptionOptionToString(sound_session_option_for_resumption_e option) {
   LOGD("enter");
 
   if (option == SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM) {
-    return "by-system";
+    return "system";
   } else if (option == SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM_OR_MEDIA_PAUSED) {
-    return "by-system-or-media-paused";
+    return "system-or-media-paused";
   } else {
     LOGE("invalid sound_session_option_for_resumption_e was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+const char* SoundManagerUtil::soundSessionVoipModeToString(sound_session_voip_mode_e mode) {
+  LOGD("enter");
+
+  if (mode == SOUND_SESSION_VOIP_MODE_RINGTONE) {
+    return "ringtone";
+  } else if (mode == SOUND_SESSION_VOIP_MODE_VOICE_WITH_BUILTIN_RECEIVER) {
+    return "builtin-receiver";
+  } else if (mode == SOUND_SESSION_VOIP_MODE_VOICE_WITH_BUILTIN_SPEAKER) {
+    return "builtin-speaker";
+  } else if (mode == SOUND_SESSION_VOIP_MODE_VOICE_WITH_AUDIO_JACK) {
+    return "audio-jack";
+  } else if (mode == SOUND_SESSION_VOIP_MODE_VOICE_WITH_BLUETOOTH) {
+    return "bluetooth";
+  } else {
+    LOGE("invalid sound_session_voip_mode_e was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+const char* SoundManagerUtil::soundSessioninterruptedCodeToString(sound_session_interrupted_code_e type) {
+  LOGD("enter");
+
+  if (type == SOUND_SESSION_INTERRUPTED_COMPLETED) {
+    return "completed";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_MEDIA) {
+    return "media";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_CALL) {
+    return "call";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_EARJACK_UNPLUG) {
+    return "earjack-unplug";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_RESOURCE_CONFLICT) {
+    return "resource-confict";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_ALARM) {
+    return "alarm";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_EMERGENCY) {
+    return "emergency";
+  } else if (type == SOUND_SESSION_INTERRUPTED_BY_NOTIFICATION) {
+    return "notification";
+  } else {
+    LOGE("invalid sound_session_interrupted_code_e was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+sound_session_type_e SoundManagerUtil::soundSessionTypeToInt(const char* type) {
+  LOGD("enter");
+
+  if (!strcmp(type, "media")) {
+    return SOUND_SESSION_TYPE_MEDIA;
+  } else if (!strcmp(type, "alarm")) {
+    return SOUND_SESSION_TYPE_ALARM;
+  } else if (!strcmp(type, "notification")) {
+    return SOUND_SESSION_TYPE_NOTIFICATION;
+  } else if (!strcmp(type, "emergency")) {
+    return SOUND_SESSION_TYPE_EMERGENCY;
+  } else if (!strcmp(type, "voip")) {
+    return SOUND_SESSION_TYPE_VOIP;
+  } else {
+    LOGD("invalid type was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+sound_session_option_for_starting_e SoundManagerUtil::soundSessionStartOptionToInt(const char* option) {
+  LOGD("enter");
+
+  if (!strcmp(option, "mix-with-others")) {
+    return SOUND_SESSION_OPTION_MIX_WITH_OTHERS_WHEN_START;
+  } else if (!strcmp(option, "pause-others")) {
+    return SOUND_SESSION_OPTION_PAUSE_OTHERS_WHEN_START;
+  } else {
+    LOGD("invalid option was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+sound_session_option_for_during_play_e SoundManagerUtil::soundSessionInterruptOptionToInt(const char* option) {
+  LOGD("enter");
+
+  if (!strcmp(option, "interruptible")) {
+    return SOUND_SESSION_OPTION_INTERRUPTIBLE_DURING_PLAY;
+  } else if (!strcmp(option, "uninterruptible")) {
+    return SOUND_SESSION_OPTION_UNINTERRUPTIBLE_DURING_PLAY;
+  } else {
+    LOGD("invalid option was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+sound_session_option_for_resumption_e SoundManagerUtil::soundSessionResumptionOptionToInt(const char* option) {
+  LOGD("enter");
+
+  if (!strcmp(option, "system")) {
+    return SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM;
+  } else if (!strcmp(option, "system-or-media-paused")) {
+    return SOUND_SESSION_OPTION_RESUMPTION_BY_SYSTEM_OR_MEDIA_PAUSED;
+  } else {
+    LOGD("invalid option was passed");
+    // TODO: throw TypeErrorException
+  }
+}
+
+sound_session_voip_mode_e SoundManagerUtil::soundSessionVoipModeToInt(const char* mode) {
+  LOGD("enter");
+
+  if (!strcmp(mode, "ringtone")) {
+    return SOUND_SESSION_VOIP_MODE_RINGTONE;
+  } else if (!strcmp(mode, "builtin-receiver")) {
+    return SOUND_SESSION_VOIP_MODE_VOICE_WITH_BUILTIN_RECEIVER;
+  } else if (!strcmp(mode, "builtin-speaker")) {
+    return SOUND_SESSION_VOIP_MODE_VOICE_WITH_BUILTIN_SPEAKER;
+  } else if (!strcmp(mode, "audio-jack")) {
+    return SOUND_SESSION_VOIP_MODE_VOICE_WITH_AUDIO_JACK;
+  } else if (!strcmp(mode, "bluetooth")) {
+    return SOUND_SESSION_VOIP_MODE_VOICE_WITH_BLUETOOTH;
+  } else {
+    LOGD("invalid mode was passed");
     // TODO: throw TypeErrorException
   }
 }

@@ -31,6 +31,9 @@ function native_async_call(method, parameter, callback) {
 }
 
 function native_sync_call(method, parameter) {
+  console.log("native_sync_call");
+  console.log("method: " + method);
+  console.log("parameter: " + parameter);
   var args = {};
   args["cmd"] = method;
   args = Object.assign(args, parameter);
@@ -68,11 +71,11 @@ function registerEventHandler(app) {
 class Device {
    constructor(id , name, type, direction, state){
     console.log('Device constructor ');
-    this[internalId_] = id;
-    this[name_] = name;
-    this[type_] = type;
-    this[direction_] = direction;
-    this[state_] = state;
+    this['internalId_'] = id;
+    this['name_'] = name;
+    this['type_'] = type;
+    this['direction_'] = direction;
+    this['state_'] = state;
   }
 
   /**
@@ -81,7 +84,7 @@ class Device {
    * @readonly
    */
   get id() {
-    return this[internalId_];
+    return this['internalId_'];
   }
 
   /**
@@ -90,7 +93,7 @@ class Device {
    * @readonly
    */
   get name() {
-    return this[name_];
+    return this['name_'];
   }
 
   /**
@@ -99,7 +102,7 @@ class Device {
    * @readonly
    */
   get ioDirection() {
-    return this[direction_];
+    return this['direction_'];
   }
 
   /**
@@ -108,7 +111,7 @@ class Device {
    * @readonly
    */
   get state() {
-    return this[state_];
+    return this['state_'];
   }
 
   /**
@@ -117,7 +120,7 @@ class Device {
    * @readonly
    */
   get type() {
-    return this[type];
+    return this['type'];
   }
 };
 
@@ -129,6 +132,7 @@ var EE = require('events');
  */
 class SoundManager extends EE{
   constructor() {
+    console.log("constructor");
     super();
     this.connectionFilter_ = {};
     this.deviceInfoFilter_ = {};
@@ -206,10 +210,90 @@ class SoundManager extends EE{
                 reject(new Error(result['reason']));
             }
           });
-     }
+     });
 
   }
 
+  get session() {
+    console.log("get session");
+    if (!this.session_) {
+      this.session_ = new Session();
+    }
+    return this.session_;
+  } // get session()
+
 };
+
+class Session extends EE {
+
+  constructor() {
+    console.log("constructor");
+    super();
+    //(function(){
+      console.log("_setInterruptListener");
+      native_sync_call("_setInterruptListener");
+    //})();
+
+    registerEventHandler(this);
+  }
+
+  __event_handle__(event) {
+    console.log("event handler");
+    if (event["event"] = "seesionInterrupt") {
+      this.emit("interrupt", event["type"]);
+    }
+  }
+
+  get type() {
+    console.log("get type");
+    return native_sync_call("getSessionType");
+  }
+
+  set type(type) {
+    console.log("set type");
+    native_sync_call("setSessionType", {"type": type});
+  }
+
+  get startingOption() {
+    console.log("get startingOption");
+    return native_sync_call("getSessionStartingOption");
+  }
+
+  set startingOption(option) {
+    console.log("set startingOption");
+    native_sync_call("setSessionStartingOption", {"option": option});
+  }
+
+  get interruptOption() {
+    console.log("get interruptOption");
+    return native_sync_call("getSessionInterruptOption");
+  }
+
+  set interruptOption(option) {
+    console.log("set interruptOption");
+    native_sync_call("setSessionInterruptOption", {"option": option});
+  }
+
+  get resumptionOption() {
+    console.log("get resumptionOption");
+    return native_sync_call("getSessionResumptionOption");
+  }
+
+  set resumptionOption(option) {
+    console.log("set resumptionOption");
+    native_sync_call("setSessionResumptionOption", {"option": option});
+  }
+
+  get voipMode() {
+    console.log("get voipMode");
+    return native_sync_call("getSessionVoipMode");
+  }
+
+  set voipMode(mode) {
+    console.log("set voipMode");
+    native_sync_call("setSessionVoipMode", {"mode": mode});
+  }
+
+}
 
 exports = new SoundManager();

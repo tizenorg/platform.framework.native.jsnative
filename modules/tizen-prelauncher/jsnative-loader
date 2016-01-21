@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+console.log('start jsnative-loader');
+var apppath = require('tizen-prelauncher').ready();
+if (apppath)
+  require(apppath);
+else
+  console.log('can\'t start loader');

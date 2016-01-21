@@ -16,8 +16,8 @@ class SoundManagerExtension : public xwalk::XWalkExtension {
 
 class SoundManagerInstance : public xwalk::XWalkExtensionInstance {
  public:
-   // @override
-   void Initialize();
+  // @override
+  void Initialize();
 
   // @override
   void HandleMessage(const char* msg);
@@ -25,6 +25,9 @@ class SoundManagerInstance : public xwalk::XWalkExtensionInstance {
   // @override
   void HandleSyncMessage(const char* msg);
   int GetDeviceInfo(sound_device_h device, picojson::object* obj);
+
+  static void _interruptListener(sound_session_interrupted_code_e type, void *userData);
+
 private:
  void InitializeCallbacks();
  void ConnectionChangedCallback(sound_device_h device,
@@ -41,7 +44,20 @@ private:
                                          const std::string& type,
                                          const std::string& state);
 
+  const picojson::object getSessionType();
+  const picojson::object setSessionType(const picojson::value value);
+  const picojson::object getSessionStartingOption();
+  const picojson::object setSessionStartingOption(const picojson::value value);
+  const picojson::object getSessionInterruptOption();
+  const picojson::object setSessionInterruptOption(const picojson::value value);
+  const picojson::object getSessionResumptionOption();
+  const picojson::object setSessionResumptionOption(const picojson::value value);
+  const picojson::object getSessionVoipMode();
+  const picojson::object setSessionVoipMode(const picojson::value value);
+
+  const picojson::object _setInterruptListener();
 };
+
 }  // namespace sound
 
 #endif  // _SOUND_MANAGER_EXTENSION_H_

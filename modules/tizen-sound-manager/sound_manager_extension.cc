@@ -32,15 +32,29 @@ xwalk::XWalkExtensionInstance* SoundManagerExtension::CreateInstance() {
 
 void ErrorHandle(int ret, picojson::object* data) {
   picojson::object& result = *data;
-  if(ret == SOUND_MANAGER_ERROR_INVALID_PARAMETER ){
-    result["result"] = picojson::value("FAIL");
-    result["reason"] = picojson::value("invalid parameter");
-   }else if (ret == SOUND_MANAGER_ERROR_INTERNAL){
-    result["result"] = picojson::value("FAIL");
-    result["reason"] = picojson::value("error internal");
-  }else{
-    result["result"] = picojson::value("FAIL");
-    result["reason"] = picojson::value("unknown fail");
+
+  result["result"] = picojson::value("FAIL");
+
+  if (ret == SOUND_MANAGER_ERROR_OUT_OF_MEMORY) {
+    result["reason"] = picojson::value("out-of-memory");
+  } else if (ret == SOUND_MANAGER_ERROR_INVALID_PARAMETER) {
+    result["reason"] = picojson::value("invalid-parameter");
+  } else if (ret == SOUND_MANAGER_ERROR_INVALID_OPERATION) {
+    result["reason"] = picojson::value("invalid-operation");
+  } else if (ret == SOUND_MANAGER_ERROR_PERMISSION_DENIED) {
+    result["reason"] = picojson::value("permission-denied");
+  } else if (ret == SOUND_MANAGER_ERROR_NOT_SUPPORTED) {
+    result["reason"] = picojson::value("not-supported");
+  } else if (ret == SOUND_MANAGER_ERROR_NO_DATA) {
+    result["reason"] = picojson::value("no-data");
+  } else if (ret == SOUND_MANAGER_ERROR_INTERNAL) {
+    result["reason"] = picojson::value("internal");
+  } else if (ret == SOUND_MANAGER_ERROR_POLICY) {
+    result["reason"] = picojson::value("policy");
+  } else if (ret == SOUND_MANAGER_ERROR_NO_PLAYING_SOUND) {
+    result["reason"] = picojson::value("no-playing-sound");
+  } else {
+    result["reason"] = picojson::value("unknown-error");
   }
 }
 
@@ -247,9 +261,30 @@ void SoundManagerInstance::HandleSyncMessage(const char* msg) {
     auto type_str = request["soundtype"].to_str();
     sound_type_e type = SoundManagerUtil::StringToSoundType(type_str.c_str());
     sound_manager_set_volume(type, volume);
-  }
-  else {
-    LOGW("the cmd is wrong cmd");
+  } else if (cmd == "getSessionType") {
+    SendSyncReply(picojson::value(getSessionType()).serialize().c_str());
+  } else if (cmd == "getSessionStartingOption") {
+    SendSyncReply(picojson::value(getSessionStartingOption()).serialize().c_str());
+  } else if (cmd == "getSessionInterruptOption") {
+    SendSyncReply(picojson::value(getSessionInterruptOption()).serialize().c_str());
+  } else if (cmd == "getSessionResumptionOption") {
+    SendSyncReply(picojson::value(getSessionResumptionOption()).serialize().c_str());
+  } else if (cmd == "getSessionVoipMode") {
+    SendSyncReply(picojson::value(getSessionVoipMode()).serialize().c_str());
+  } else if (cmd == "setSessionType") {
+    SendSyncReply(picojson::value(setSessionType(value)).serialize().c_str());
+  } else if (cmd == "setSessionStartingOption") {
+    SendSyncReply(picojson::value(setSessionStartingOption(value)).serialize().c_str());
+  } else if (cmd == "setSessionInterruptOption") {
+    SendSyncReply(picojson::value(setSessionInterruptOption(value)).serialize().c_str());
+  } else if (cmd == "setSessionResumptionOption") {
+    SendSyncReply(picojson::value(setSessionResumptionOption(value)).serialize().c_str());
+  } else if (cmd == "setSessionVoipMode") {
+    SendSyncReply(picojson::value(setSessionVoipMode(value)).serialize().c_str());
+  } else if (cmd == "_setInterruptListener") {
+    SendSyncReply(picojson::value(_setInterruptListener()).serialize().c_str());
+  } else {
+    LOGD("the cmd is wrong cmd");
   }
 
 }
@@ -382,7 +417,267 @@ sound_device_mask_e  SoundManagerInstance::GetMask(const std::string& direction,
   return mask;
 }
 
+// Session
+const picojson::object SoundManagerInstance::getSessionType() {
+  LOGD("enter");
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_type_e type;
+  picojson::object result;
+
+  ret = sound_manager_get_session_type(&type);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_session_type() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+  result["data"] = picojson::value(SoundManagerUtil::soundSessionTypeToString(type));
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::setSessionType(const picojson::value value) {
+  LOGD("enter");
+
+  const char* type = value.get("type").to_str().c_str();
+  LOGD("type: %s", type);
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  picojson::object result;
+
+  ret = sound_manager_set_session_type(SoundManagerUtil::soundSessionTypeToInt(type));
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_set_session_type() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::getSessionStartingOption() {
+  LOGD("enter");
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_option_for_starting_e startOption;
+  sound_session_option_for_during_play_e InterruptOption;
+  picojson::object result;
+
+  ret = sound_manager_get_media_session_option(&startOption, &InterruptOption);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_media_session_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+  result["data"] = picojson::value(SoundManagerUtil::soundSessionStartOptionToString(startOption));
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::setSessionStartingOption(const picojson::value value) {
+  LOGD("enter");
+
+  const char* option = value.get("option").to_str().c_str();
+  LOGD("option: %s", option);
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_option_for_starting_e startOption;
+  sound_session_option_for_during_play_e InterruptOption;
+  picojson::object result;
+
+  ret = sound_manager_get_media_session_option(&startOption, &InterruptOption);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_media_session_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  // TODO: it is need to check whether the startingOption is equal to
+
+  ret = sound_manager_set_media_session_option(SoundManagerUtil::soundSessionStartOptionToInt(option), InterruptOption);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_set_media_session_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::getSessionInterruptOption() {
+  LOGD("enter");
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_option_for_starting_e startOption;
+  sound_session_option_for_during_play_e InterruptOption;
+  picojson::object result;
+
+  ret = sound_manager_get_media_session_option(&startOption, &InterruptOption);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_media_session_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+  result["data"] = picojson::value(SoundManagerUtil::soundSessionInterruptOptionToString(InterruptOption));
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::setSessionInterruptOption(const picojson::value value) {
+  LOGD("enter");
+
+  const char* option = value.get("option").to_str().c_str();
+  LOGD("option: %s", option);
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_option_for_starting_e startOption;
+  sound_session_option_for_during_play_e InterruptOption;
+  picojson::object result;
+
+  ret = sound_manager_get_media_session_option(&startOption, &InterruptOption);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_media_session_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  // TODO: it is need to check whether the interruptOption is equal to
+
+  ret = sound_manager_set_media_session_option(startOption, SoundManagerUtil::soundSessionInterruptOptionToInt(option));
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_set_media_session_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::getSessionResumptionOption() {
+  LOGD("enter");
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_option_for_resumption_e resumptionOption;
+  picojson::object result;
+
+  ret = sound_manager_get_media_session_resumption_option(&resumptionOption);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_media_session_resumption_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+  result["data"] = picojson::value(SoundManagerUtil::soundSessionResumptionOptionToString(resumptionOption));
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::setSessionResumptionOption(const picojson::value value) {
+  LOGD("enter");
+
+  const char* option = value.get("option").to_str().c_str();
+  LOGD("option: %s", option);
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  picojson::object result;
+
+  ret = sound_manager_set_media_session_resumption_option(SoundManagerUtil::soundSessionResumptionOptionToInt(option));
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_set_media_session_resumption_option() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::getSessionVoipMode() {
+  LOGD("enter");
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  sound_session_voip_mode_e voipMode;
+  picojson::object result;
+
+  ret = sound_manager_get_voip_session_mode(&voipMode);
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_voip_session_mode() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+  result["data"] = picojson::value(SoundManagerUtil::soundSessionVoipModeToString(voipMode));
+
+  return result;
+}
+
+const picojson::object SoundManagerInstance::setSessionVoipMode(const picojson::value value) {
+  LOGD("enter");
+
+  const char* mode = value.get("mode").to_str().c_str();
+  LOGD("mode: %s", mode);
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  picojson::object result;
+
+  ret = sound_manager_set_voip_session_mode(SoundManagerUtil::soundSessionVoipModeToInt(mode));
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_get_voip_session_mode() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+
+  return result;
+}
+
+// callback
+void SoundManagerInstance::_interruptListener(sound_session_interrupted_code_e type, void* userData) {
+  LOGD("enter");
+
+  SoundManagerInstance* instance = reinterpret_cast<SoundManagerInstance*>(userData);
+
+  picojson::object msg;
+  msg["event"] = picojson::value("sessionInterrupt");
+  msg["type"] = picojson::value(SoundManagerUtil::soundSessioninterruptedCodeToString(type));
+
+  instance->PostMessage(picojson::value(msg).serialize().c_str());
+}
+
+const picojson::object SoundManagerInstance::_setInterruptListener() {
+  LOGD("enter");
+
+  int ret = SOUND_MANAGER_ERROR_NONE;
+  picojson::object result;
+
+  ret = sound_manager_set_session_interrupted_cb(_interruptListener, static_cast<void*>(this));
+  if (ret != SOUND_MANAGER_ERROR_NONE) {
+    LOGE("sound_manager_set_session_interrupted_cb() return (%d)", ret);
+    ErrorHandle(ret, &result);
+    return result;
+  }
+
+  result["result"] = picojson::value("OK");
+
+  return result;
+}
+
 }  // namespace sound
 
-
-EXPORT_XWALK_EXTENSION(tizen_sound_manager,  sound::SoundManagerExtension);
+EXPORT_XWALK_EXTENSION(tizen_sound_manager, sound::SoundManagerExtension);

@@ -31,12 +31,22 @@ public:
   static std::string  SoundIOTypeToString(sound_device_io_direction_e direction);
   static std::string  SoundStateToString(sound_device_state_e state);
   static sound_device_mask_e FilterStringToEnum(const std::string& key);
-  static const char* SessionTypeToString(sound_session_type_e type);
-  static const char* SessionStartOptionToString(sound_session_option_for_starting_e type);
-  static const char* SessionPlayingOptionToString(sound_session_option_for_during_play_e type);
-  static const char* SessionResumptionOptionToString(sound_session_option_for_resumption_e type);
   static const char* SoundTypeToString(sound_type_e type);
   static sound_type_e StringToSoundType(const std::string& type_str);
+
+  static const char* soundSessionTypeToString(sound_session_type_e type);
+  static const char* soundSessionStartOptionToString(sound_session_option_for_starting_e type);
+  static const char* soundSessionInterruptOptionToString(sound_session_option_for_during_play_e type);
+  static const char* soundSessionResumptionOptionToString(sound_session_option_for_resumption_e type);
+  static const char* soundSessionVoipModeToString(sound_session_voip_mode_e type);
+  static const char* soundSessioninterruptedCodeToString(sound_session_interrupted_code_e type);
+
+  static sound_session_type_e soundSessionTypeToInt(const char* type);
+  static sound_session_option_for_starting_e soundSessionStartOptionToInt(const char* type);
+  static sound_session_option_for_during_play_e soundSessionInterruptOptionToInt(const char* type);
+  static sound_session_option_for_resumption_e soundSessionResumptionOptionToInt(const char* type);
+  static sound_session_voip_mode_e soundSessionVoipModeToInt(const char* type);
+
 private:
   static const std::map<std::string, sound_device_mask_e> sound_device_mask_map_;
 };

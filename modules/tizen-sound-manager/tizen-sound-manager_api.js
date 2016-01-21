@@ -31,6 +31,9 @@ function native_async_call(method, parameter, callback) {
 }
 
 function native_sync_call(method, parameter) {
+  console.log("native_sync_call");
+  console.log("method: " + method);
+  console.log("parameter: " + parameter);
   var args = {};
   args["cmd"] = method;
   args = Object.assign(args, parameter);
@@ -234,6 +237,14 @@ class SoundManager extends EE{
     return this.volume_;
   } // get volume()
 
+  get session() {
+    console.log("get session");
+    if (!this.session_) {
+      this.session_ = new Session();
+    }
+    return this.session_;
+  } // get session()
+
 };
 
 class Volume extends EE{
@@ -275,13 +286,174 @@ class Volume extends EE{
   }
 
   __event_handle__(ev) {
-  console.log('__event_handle__ : ' + ['event']);
+    console.log('__event_handle__ : ' + ['event']);
     var change = false;
     if (ev['event'] === 'volume.change') {
         this.emit('change',ev['type'],ev['volume']);
     }
   }
 
+};
+
+var SessionType = {
+  "media": "media",
+  "alarm": "alarm",
+  "notification": "notification",
+  "emergency": "emergency",
+  "voip": "voip"
+};
+
+var SessionStartingOption = {
+  "mix-with-others": "mix-with-others",
+  "pause-others": "pause-others"
+};
+
+var SessionInterruptOption = {
+  "interruptible": "interruptible",
+  "uninterruptible": "uninterruptible"
+};
+
+var SessionResumptionOption = {
+  "system": "system",
+  "system-or-media-paused": "system-or-media-paused"
+};
+
+var SessionVoipMode = {
+  "ringtome": "ringtome",
+  "builtin-receiver": "builtin-receiver",
+  "builtin-speaker": "builtin-speaker",
+  "audio-jack": "audio-jack",
+  "bluetooth": "bluetooth"
+}
+
+class Session extends EE {
+
+  constructor() {
+    console.log("constructor");
+    super();
+    console.log("_setInterruptListener");
+    var result = native_sync_call("_setInterruptListener");
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+    registerEventHandler(this);
+  }
+
+  __event_handle__(event) {
+    console.log("event handler");
+    if (event["event"] = "sessionInterrupt") {
+      this.emit("interrupt", event["type"]);
+    } else {
+      console.log("invalid event type was passed")
+    }
+  }
+
+  get type() {
+    console.log("get type");
+    var result = native_sync_call("getSessionType");
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+      return;
+    }
+    return result["data"];
+  }
+
+  set type(type) {
+    if (!SessionType[type]) {
+      console.log("invalid value is passed");
+      return;
+    }
+    console.log("set type");
+    var result = native_sync_call("setSessionType", {"type": type});
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+  }
+
+  get startingOption() {
+    console.log("get startingOption");
+    var result = native_sync_call("getSessionStartingOption");
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+      return;
+    }
+    return result["data"];
+  }
+
+  set startingOption(option) {
+    console.log("set startingOption");
+    if (!SessionStartingOption[option]) {
+      console.log("invalid value is passed");
+      return;
+    }
+    var result = native_sync_call("setSessionStartingOption", {"option": option});
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+  }
+
+  get interruptOption() {
+    console.log("get interruptOption");
+    var result = native_sync_call("getSessionInterruptOption");
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+    return result["data"];
+  }
+
+  set interruptOption(option) {
+    console.log("set interruptOption");
+    if (!SessionInterruptOption[option]) {
+      console.log("invalid value is passed");
+      return;
+    }
+    var result = native_sync_call("setSessionInterruptOption", {"option": option});
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+  }
+
+  get resumptionOption() {
+    console.log("get resumptionOption");
+    var result = native_sync_call("getSessionResumptionOption");
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+    return result["data"];
+  }
+
+  set resumptionOption(option) {
+    console.log("set resumptionOption");
+    if (!SessionResumptionOption[option]) {
+      console.log("invalid value is passed");
+      return;
+    }
+    var result = native_sync_call("setSessionResumptionOption", {"option": option});
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+  }
+
+  get voipMode() {
+    console.log("get voipMode");
+    var result = native_sync_call("getSessionVoipMode");
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+    return result["data"];
+  }
+
+  set voipMode(mode) {
+    console.log("set voipMode");
+    if (!SessionVoipMode[mode]) {
+      console.log("invalid value is passed");
+      return;
+    }
+    var result = native_sync_call("setSessionVoipMode", {"mode": mode});
+    if (result["result"] == "FAIL") {
+      console.log("error mesage: " + result["reason"]);
+    }
+  }
 }
 
 exports = new SoundManager();

@@ -1,0 +1,10 @@
+{
+  "name": "tizen-system-setting",
+  "version": "0.0.1",
+  "description": "Module for system setting",
+  "main": "tizen-system-setting.xwalk",
+  "author": {
+    "name": "Sunghyun Min",
+    "email": "shyun.min@samsung.com"
+  }
+}

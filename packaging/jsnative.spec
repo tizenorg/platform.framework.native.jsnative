@@ -28,6 +28,7 @@ BuildRequires: pkgconfig(capi-appfw-app-manager)
 BuildRequires: pkgconfig(capi-message-port)
 BuildRequires: pkgconfig(capi-media-sound-manager)
 BuildRequires: pkgconfig(capi-system-device)
+BuildRequires: pkgconfig(capi-system-system-settings)
 
 Requires: nodejs
 

@@ -9,4 +9,5 @@ ADD_SUBDIRECTORY(reaper)
 ADD_SUBDIRECTORY(tizen-app-control)
 ADD_SUBDIRECTORY(tizen-application)
 ADD_SUBDIRECTORY(tizen-application-common)
-ADD_SUBDIRECTORY(tizen-app-preference)
+
+ADD_SUBDIRECTORY(tizen-sound-manager)

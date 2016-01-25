@@ -648,7 +648,7 @@ const picojson::object SoundManagerInstance::SetSessionVoipMode(const picojson::
 }
 
 // callback
-void SoundManagerInstance::InterruptListener(sound_session_interrupted_code_e type, void* userData) {
+void InterruptListener(sound_session_interrupted_code_e type, void* userData) {
   LOGD("enter");
 
   SoundManagerInstance* instance = reinterpret_cast<SoundManagerInstance*>(userData);

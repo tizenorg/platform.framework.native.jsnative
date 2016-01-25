@@ -26,8 +26,6 @@ class SoundManagerInstance : public xwalk::XWalkExtensionInstance {
   void HandleSyncMessage(const char* msg);
   int GetDeviceInfo(sound_device_h device, picojson::object* obj);
 
-  static void InterruptListener(sound_session_interrupted_code_e type, void *userData);
-
 private:
  void InitializeCallbacks();
  void ConnectionChangedCallback(sound_device_h device,

@@ -22,6 +22,7 @@ ADD_DEFINITIONS("-Wextra")              # Generate even more extra warnings
 ADD_DEFINITIONS("-Wno-variadic-macros") # Inhibit variadic macros warnings (needed for ORM)
 ADD_DEFINITIONS("-Wno-deprecated")      # No warnings about deprecated features
 ADD_DEFINITIONS("-std=c++0x")           # accept C++11x standard
+ADD_DEFINITIONS("-fvisibility=hidden")
 
 SET(GLOBAL_NODE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/node)
 INCLUDE(build/common.cmake)

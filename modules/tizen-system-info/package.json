@@ -1,0 +1,6 @@
+{
+  "name": "tizen-system-info",
+  "version": "0.0.1",
+  "description": "Tizen System Info API",
+  "main": "tizen-system-info.xwalk"
+}

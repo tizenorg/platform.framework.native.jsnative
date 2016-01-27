@@ -2,8 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+const internalUtil = process.binding('util');
+const internalContextify = process.binding('contextify');
+
+function runInThisContext(code, options) {
+  var script = new internalContextify.ContextifyScript(code, options);
+  return script.runInThisContext();
+}
+
 function error(msg) {
   require('node-dlog').loge('node-xwalk: ' + msg);
+}
+
+function throwError(msg) {
+  error(msg);
+  throw new Error(msg);
 }
 
 // Cached set of extension modules
@@ -17,16 +30,14 @@ ExtensionModule.prototype.load = function() {
   var native_ = require('../build/Release/node-xwalk-native');
   this.extension_info = native_.getExtensionInfo(this.extension_path);
   if (!this.extension_info) {
-    error('Error during get information of extension "' +
-          this.extension_path + '"');
-    return false;
+    throwError('Error during get information of extension "' +
+               this.extension_path + '"');
   }
 
   this.instance_id = native_.createInstance(this.extension_info.extension_id);
   if (!this.instance_id) {
-    error('Error during creating instance of extension "' +
-          this.extension_path + '"');
-    return false;
+    throwError('Error during creating instance of extension "' +
+               this.extension_path + '"');
   }
 
   var jscode =
@@ -39,7 +50,7 @@ ExtensionModule.prototype.load = function() {
     '  return exports;' +
     '});';
   try {
-    var func = eval(jscode);
+    var func = runInThisContext(jscode);
     this.instance = func({
       instance_id: this.instance_id,
       postMessage: function(msg) {
@@ -52,12 +63,17 @@ ExtensionModule.prototype.load = function() {
         native_.setMessageListener(this.instance_id, fn);
       }
     });
-    return true;
   } catch (err) {
     error('Error during loading extension "' +
           this.extension_path);
+    if (internalUtil.getHiddenValue) {
+      var arrow = internalUtil.getHiddenValue(err, 'arrowMessage');
+      if (arrow) {
+        error(arrow);
+      }
+    }
     error(err.stack);
-    return false;
+    throw err;
   }
 };
 
@@ -82,22 +98,23 @@ ExtensionLoader.prototype.findExtensionInPath = function(name) {
     }
   }
 
-  for (var i in this.extension_paths) {
+  this.extension_paths.forEach(function(p) {
     var try_files = [
-      path.join(this.extension_paths[i], name),
-      path.join(this.extension_paths[i], name + '.xwalk'),
-      path.join(this.extension_paths[i], 'lib' + name + '.so')
+      path.join(p, name),
+      path.join(p, name + '.xwalk'),
+      path.join(p, 'lib' + name + '.so')
     ];
 
-    for (var j in try_files) {
+    try_files.forEach(function(f) {
       try {
-        fs.accessSync(try_files[j], fs.R_OK);
-        return try_files[j];
+        fs.accessSync(f, fs.R_OK);
+        return f;
       } catch (err) {
-        continue;
+        // ignore err
       }
-    }
-  }
+    });
+  });
+
   return undefined;
 };
 
@@ -109,8 +126,7 @@ ExtensionLoader.prototype.setRuntimeVariable = function(key, value) {
 ExtensionLoader.prototype.require = function(name) {
   var ext_path = this.findExtensionInPath(name);
   if (!ext_path) {
-    error('Can not find extension "' + name + '"');
-    return undefined;
+    throw new Error('Cannot find extension \'' + name + '\'');
   }
 
   if (extensions_.hasOwnProperty(ext_path)) {
@@ -118,12 +134,9 @@ ExtensionLoader.prototype.require = function(name) {
   }
 
   var ext = new ExtensionModule(ext_path);
-  if (ext.load()) {
-    extensions_[ext_path] = ext;
-    return extensions_[ext_path].instance;
-  }
-
-  return undefined;
+  ext.load();
+  extensions_[ext_path] = ext;
+  return extensions_[ext_path].instance;
 };
 
 ExtensionLoader.prototype.install = function() {

@@ -35,13 +35,22 @@ namespace service {
 
 struct poll_handler {
   int fd;
-  uv_poll_t *uv_poll;
+  uv_poll_t* uv_poll;
   int eventmask;
   int ref;
   std::list<GPollFD*> fd_list;
 };
 
-GContext::GContext():initialized_(false) {
+GContext::GContext() :
+    initialized_(false),
+    context_(NULL),
+    max_priority_(0),
+    fd_list_(NULL),
+    fd_list_size_(0),
+    fd_count_(0),
+    prepare_handle_(NULL),
+    check_handle_(NULL),
+    timeout_handle_(NULL) {
 }
 
 GContext::~GContext() {
@@ -51,7 +60,7 @@ void GContext::Init() {
   if (initialized_)
     return;
   initialized_ = true;
-  GMainContext *gc = g_main_context_default();
+  GMainContext* gc = g_main_context_default();
 
 #if !GLIB_CHECK_VERSION(2, 35, 0)
   g_type_init();
@@ -128,7 +137,7 @@ void GContext::Uninit() {
   g_main_context_unref(context_);
 }
 
-static void poll_cb(uv_poll_t *uv_handle, int status, int events) {
+static void poll_cb(uv_poll_t* uv_handle, int status, int events) {
   poll_handler* handle = static_cast<poll_handler*>(uv_handle->data);
   if (status == 0) {
     std::list<GPollFD*>::iterator itr = handle->fd_list.begin();
@@ -144,7 +153,6 @@ static void poll_cb(uv_poll_t *uv_handle, int status, int events) {
 }
 
 void GContext::onPrepare() {
-  int i;
   int timeout;
 
   g_main_context_prepare(context_, &max_priority_);
@@ -176,8 +184,8 @@ void GContext::onPrepare() {
       handle->fd_list.clear();
 
       // check already initialized poll handles
-      for (i = 0; i < fd_count_; ++i) {
-        GPollFD *pfd = fd_list_ + i;
+      for (int i = 0; i < fd_count_; ++i) {
+        GPollFD* pfd = fd_list_ + i;
         if (handle->fd == pfd->fd) {
           flagsTable.get()[i] = 1;
           handle->ref++;
@@ -211,15 +219,15 @@ void GContext::onPrepare() {
 
     std::list<poll_handler*> new_poll_fds;
     /* Process current file descriptors from GContext */
-    for (i = 0; i < fd_count_; ++i) {
-      GPollFD *pfd = &fd_list_[i];
+    for (int i = 0; i < fd_count_; ++i) {
+      GPollFD* pfd = &fd_list_[i];
       int exists = flagsTable.get()[i];
       if (exists)
         continue;
 
       pfd->revents = 0;
       for (itr = new_poll_fds.begin(); itr != new_poll_fds.end(); ++itr) {
-        poll_handler *handle = *itr;
+        poll_handler* handle = *itr;
         if (handle->fd == pfd->fd) {
           int oldmask = handle->eventmask;
           handle->eventmask |= (pfd->events & G_IO_IN ? UV_READABLE: 0)
@@ -242,7 +250,7 @@ void GContext::onPrepare() {
       handle->ref = 1;
 
       /* Create uv poll handler, then append own poll handler on it */
-      uv_poll_t *pt = static_cast<uv_poll_t*>(malloc(sizeof(uv_poll_t)));
+      uv_poll_t* pt = static_cast<uv_poll_t*>(malloc(sizeof(uv_poll_t)));
       memset(pt, 0, sizeof(uv_poll_t));
       pt->data = handle;
       handle->uv_poll = pt;
@@ -265,7 +273,7 @@ void GContext::onPrepare() {
 
 
 void GContext::OnPrepare(uv_prepare_t* handle) {
-  GContext *This = static_cast<GContext*>(handle->data);
+  GContext* This = static_cast<GContext*>(handle->data);
   This->onPrepare();
 }
 
@@ -293,7 +301,7 @@ void GContext::onTimeout() {
 }
 
 
-static GContext *g_context = NULL;
+static GContext* g_context = NULL;
 
 static void GContextInit(const v8::FunctionCallbackInfo<v8::Value>&) {
   v8::Isolate* isolate = v8::Isolate::GetCurrent();

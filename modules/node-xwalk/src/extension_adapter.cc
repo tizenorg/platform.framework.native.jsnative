@@ -55,8 +55,7 @@ void ExtensionAdapter::UnregisterExtension(Extension* extension) {
     LOGW("xw_extension (%d) is invalid.", xw_extension);
     return;
   }
-  if (extension_map_.find(xw_extension) != extension_map_.end())
-    extension_map_.erase(xw_extension);
+  extension_map_.erase(xw_extension);
 }
 
 void ExtensionAdapter::RegisterInstance(ExtensionInstance* instance) {
@@ -75,8 +74,7 @@ void ExtensionAdapter::UnregisterInstance(ExtensionInstance* instance) {
     LOGW("xw_instance (%d) is invalid.", xw_instance);
     return;
   }
-  if (instance_map_.find(xw_instance) != instance_map_.end())
-    instance_map_.erase(xw_instance);
+  instance_map_.erase(xw_instance);
 }
 
 const void* ExtensionAdapter::GetInterface(const char* name) {

@@ -44,17 +44,17 @@ class GContext {
   static void OnTimeout(uv_timer_s* handle);
 
   bool initialized_;
-  GMainContext *context_;
+  GMainContext* context_;
   int max_priority_;
 
-  GPollFD *fd_list_;
+  GPollFD* fd_list_;
   int fd_list_size_;
   int fd_count_;
   std::list<poll_handler*> poll_handle_list_;
 
-  uv_prepare_t *prepare_handle_;
-  uv_check_t *check_handle_;
-  uv_timer_t *timeout_handle_;
+  uv_prepare_t* prepare_handle_;
+  uv_check_t* check_handle_;
+  uv_timer_t* timeout_handle_;
 };
 
 }  // namespace service

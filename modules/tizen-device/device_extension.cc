@@ -126,25 +126,25 @@ void DeviceChangedCallback(device_callback_e type, void* value, void* data) {
   switch (type) {
     case DEVICE_CALLBACK_BATTERY_CAPACITY:
       event["event"] = "battery.capacity";
-      event["value"] = reinterpret_cast<int>(value);
+      event["value"] = *static_cast<int*>(value);
       break;
     case DEVICE_CALLBACK_BATTERY_LEVEL:
       event["event"] = "battery.level";
       event["value"] = GetBatteryLevelString(
-          static_cast<device_battery_level_e>(reinterpret_cast<int>(value)));
+          static_cast<device_battery_level_e>(*static_cast<int*>(value)));
       break;
     case DEVICE_CALLBACK_BATTERY_CHARGING:
       event["event"] = "battery.charging";
-      event["value"] = (reinterpret_cast<int>(value) != 0);
+      event["value"] = (*static_cast<int*>(value) != 0);
       break;
     case DEVICE_CALLBACK_DISPLAY_STATE:
       event["event"] = "display.state";
       event["value"] = GetDisplayStateString(
-          static_cast<display_state_e>(reinterpret_cast<int>(value)));
+          static_cast<display_state_e>(*static_cast<int*>(value)));
       break;
     case DEVICE_CALLBACK_FLASH_BRIGHTNESS:
       event["event"] = "flash.brightness";
-      event["value"] = reinterpret_cast<int>(value);
+      event["value"] = *static_cast<int*>(value);
       break;
     default:
       event["event"] = "unknown";
